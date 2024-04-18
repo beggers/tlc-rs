@@ -11,3 +11,7 @@ Rust TLA+ checker
 - Lexer (with unicode support?)
 - Parser
 - Model checker? How does that even work?
+
+## Testing
+
+- https://github.com/ongardie/raft.tla/blob/master/raft.tla
