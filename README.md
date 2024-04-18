@@ -1,7 +1,7 @@
 # tlc-rs
 Rust TLA+ checker
 
-## Notes
+## Requirements
 
 - Progress indicators like the TLA+ Toolkit (diameter, states found, percentage of states checked, yadda yadda)
 - 
@@ -15,3 +15,7 @@ Rust TLA+ checker
 ## Testing
 
 - https://github.com/ongardie/raft.tla/blob/master/raft.tla
+
+## Magic
+
+- Debugger
