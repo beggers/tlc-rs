@@ -1,13 +1,9 @@
-use pest_derive::Parser;
-use pest::Parser;
-use std::fs;
+mod ast;
+mod parser;
 
-#[derive(Parser)]
-#[grammar = "grammar.pest"]
-struct TLAParser;
+use crate::parser::parse;
 
 fn main() {
-    let contents = fs::read_to_string("testdata/string_test_module.tla").expect("Something went wrong reading the file");
-    let parsed = TLAParser::parse(Rule::source_file, &contents).unwrap();
-    println!("{:?}", parsed);
+  let filename = "testdata/string_test_module.tla";
+  let _ = parse(filename);
 }
