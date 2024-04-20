@@ -1,4 +1,4 @@
-// These are one-to-one with the grammar rules in grammar.pest.
+// These are one-to-one with the non-silenced rules in grammar.pest.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Ident {
   pub value: String

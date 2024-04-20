@@ -21,6 +21,7 @@ pub fn parse_file(filename: &str) -> Result<(), pest::error::Error<Rule>> {
   parse_string(&contents)
 }
 
+// Public for testing.
 pub fn parse_string(input: &str) -> Result<(), pest::error::Error<Rule>> {
   let parsed = TLAParser::parse(Rule::source_file, input)?.next().unwrap();
   let ast = parse_source_file(parsed);
