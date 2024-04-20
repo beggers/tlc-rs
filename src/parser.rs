@@ -16,9 +16,13 @@ struct TLAParser;
 // Force recompile when the grammar changes.
 const _GRAMMAR : &str = include_str!("../grammar.pest");
 
-pub fn parse(filename: &str) -> Result<(), pest::error::Error<Rule>> {
+pub fn parse_file(filename: &str) -> Result<(), pest::error::Error<Rule>> {
   let contents = fs::read_to_string(filename).expect("Something went wrong reading the file");
-  let parsed = TLAParser::parse(Rule::source_file, &contents)?.next().unwrap();
+  parse_string(&contents)
+}
+
+pub fn parse_string(input: &str) -> Result<(), pest::error::Error<Rule>> {
+  let parsed = TLAParser::parse(Rule::source_file, input)?.next().unwrap();
   let ast = parse_source_file(parsed);
   println!("{:?}", ast);
   Ok(())
