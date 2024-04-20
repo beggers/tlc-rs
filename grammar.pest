@@ -1,0 +1,31 @@
+WHITESPACE = _{ " " }
+
+single_line = { "----" ~ "-"* }
+double_line = { "====" ~ "="* }
+def_eq = { "==" }
+module_decl = { "MODULE" }
+identifier = { ASCII_ALPHA ~ (ASCII_ALPHA | ASCII_DIGIT)* }
+
+string = ${ "\"" ~ inner ~ "\"" }
+inner = @{ char* }
+char = {
+    !("\"" | "\\") ~ ANY
+    | "\\" ~ ("\"" | "\\" | "/" | "b" | "f" | "n" | "r" | "t")
+    | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
+}
+
+expr = {
+  string
+}
+
+operator_defn = {
+  identifier ~ def_eq ~ expr
+}
+
+module = {
+  single_line ~ module_decl ~ identifier ~ single_line ~ NEWLINE
+  ~ operator_defn ~ NEWLINE
+  ~ double_line ~ NEWLINE
+}
+
+source_file = { module+ }
