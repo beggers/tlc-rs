@@ -3,5 +3,8 @@
     "activityBar.background": "#233300",
     "titleBar.activeBackground": "#314700",
     "titleBar.activeForeground": "#F2FFD6"
-  }
+  },
+  "flake8.args": [
+    "--indent-size=2",
+  ]
 }
