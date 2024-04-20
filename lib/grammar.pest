@@ -24,7 +24,7 @@ op_defn = {
 }
 
 mod = {
-  single_line ~ mod_decl ~ ident ~ single_line ~ NEWLINE
+  NEWLINE+ ~ single_line ~ mod_decl ~ ident ~ single_line ~ NEWLINE
   ~ op_defn ~ NEWLINE
   ~ double_line ~ NEWLINE
 }

@@ -1,7 +1,7 @@
 use crate::parser::parse_file;
 
-mod ast;
-mod parser;
+pub mod ast;
+pub mod parser;
 
 pub fn parse_test_file() {
   let filename = "string_test_module.tla";

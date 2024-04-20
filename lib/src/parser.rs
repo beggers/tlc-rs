@@ -24,6 +24,8 @@ pub fn parse_file(filename: &str) -> Result<(), pest::error::Error<Rule>> {
 // Public for testing.
 pub fn parse_string(input: &str) -> Result<(), pest::error::Error<Rule>> {
   let parsed = TLAParser::parse(Rule::source_file, input)?.next().unwrap();
+  // TODO this correctly grabs the first source file, but it should fail
+  // if there's extra crap afterwards.
   let ast = parse_source_file(parsed);
   println!("{:?}", ast);
   Ok(())
