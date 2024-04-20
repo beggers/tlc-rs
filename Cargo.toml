@@ -4,17 +4,7 @@ version = "0.0.1"
 edition = "2021"
 authors = ["Ben Eggers <ben@beneggers.com>"]
 
-[[bin]]
-name = "tlcrs"
-path = "src/main.rs"
-
-[lib]
-name = "tlcrs"
-path = "src/lib.rs"
+[workspace]
 
 [dependencies]
-"pest" = "2.7.9"
-"pest_derive" = "2.7.9"
-
-[dev-dependencies]
-"regex" = "1.10.4"
+lib = { path = "lib" }

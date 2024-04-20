@@ -66,6 +66,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "lib"
+version = "0.0.1"
+dependencies = [
+ "pest",
+ "pest_derive",
+ "regex",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.153"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -221,9 +230,7 @@ dependencies = [
 name = "tlc-rs"
 version = "0.0.1"
 dependencies = [
- "pest",
- "pest_derive",
- "regex",
+ "lib",
 ]
 
 [[package]]

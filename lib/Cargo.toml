@@ -1,0 +1,16 @@
+[package]
+name = "lib"
+version = "0.0.1"
+edition = "2021"
+authors = ["Ben Eggers <ben@beneggers.com>"]
+
+[lib]
+name = "lib"
+path = "src/lib.rs"
+
+[dependencies]
+"pest" = "2.7.9"
+"pest_derive" = "2.7.9"
+
+[dev-dependencies]
+"regex" = "1.10.4"

@@ -1,6 +1,10 @@
 # tlc-rs
 Rust TLA+ checker
 
+## Organization
+
+All modules which need to be integration tested (e.g. parsing) live in `lib/`, which is technically a separate project. The top-level `src/` directory contains information for the binary project which depends on the `lib/` project.
+
 ## Requirements
 
 - Progress indicators like the TLA+ Toolkit (diameter, states found, percentage of states checked, yadda yadda)
