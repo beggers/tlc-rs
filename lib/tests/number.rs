@@ -10,9 +10,7 @@ fn all_number_formats() {
   read_and_parse::test("testdata/number.tla", "All Number Formats");
 }
 
-
 #[test]
 fn all_number_sets() {
   read_and_parse::test("testdata/number.tla", "All Number Sets");
 }
-

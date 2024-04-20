@@ -10,87 +10,72 @@ fn basic_unicode_disjlist() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Basic Unicode Disjlist");
 }
 
-
 #[test]
 fn inline_unicode_disjlist() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Inline Unicode Disjlist");
 }
-
 
 #[test]
 fn separated_unicode_disjlist() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Separated Unicode Disjlist");
 }
 
-
 #[test]
 fn multiline_unicode_disjlist() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Multiline Unicode Disjlist");
 }
-
 
 #[test]
 fn nested_unicode_disjlist() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Nested Unicode Disjlist");
 }
 
-
 #[test]
 fn infix_op_unicode_disjlist() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Infix Op Unicode Disjlist");
 }
-
 
 #[test]
 fn division_infix_op_unicode_disjlist() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Division Infix Op Unicode Disjlist");
 }
 
-
 #[test]
 fn infix_op_terminated_unicode_disjlist() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Infix Op Terminated Unicode Disjlist");
 }
-
 
 #[test]
 fn division_infix_op_terminated_unicode_disjlist() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Division Infix Op Terminated Unicode Disjlist");
 }
 
-
 #[test]
 fn not_a_unicode_disjlist() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Not a Unicode Disjlist");
 }
-
 
 #[test]
 fn unicode_disjlist_with_parentheses() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Unicode Disjlist with Parentheses");
 }
 
-
 #[test]
 fn unicode_disjlist_terminated_by_parentheses() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Unicode Disjlist Terminated by Parentheses");
 }
-
 
 #[test]
 fn nested_unicode_disjlist_terminated_by_parentheses() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Nested Unicode Disjlist Terminated by Parentheses");
 }
 
-
 #[test]
 fn unicode_disjlist_with_empty_tuple() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Unicode Disjlist with Empty Tuple");
 }
 
-
 #[test]
 fn unicode_disjlist_with_empty_set() {
   read_and_parse::test("testdata/unicode/disjlist-unicode.tla", "Unicode Disjlist with Empty Set");
 }
-

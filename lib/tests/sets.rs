@@ -10,51 +10,42 @@ fn empty_set() {
   read_and_parse::test("testdata/sets.tla", "Empty Set");
 }
 
-
 #[test]
 fn set_literal() {
   read_and_parse::test("testdata/sets.tla", "Set Literal");
 }
-
 
 #[test]
 fn set_literal_with_jlist() {
   read_and_parse::test("testdata/sets.tla", "Set Literal with Jlist");
 }
 
-
 #[test]
 fn set_map() {
   read_and_parse::test("testdata/sets.tla", "Set Map");
 }
-
 
 #[test]
 fn set_map_with_multiple_generators() {
   read_and_parse::test("testdata/sets.tla", "Set Map with Multiple Generators");
 }
 
-
 #[test]
 fn set_filter() {
   read_and_parse::test("testdata/sets.tla", "Set Filter");
 }
-
 
 #[test]
 fn set_filter_with_tuple() {
   read_and_parse::test("testdata/sets.tla", "Set Filter with Tuple");
 }
 
-
 #[test]
 fn set_filter_precedence() {
   read_and_parse::test("testdata/sets.tla", "Set Filter Precedence");
 }
 
-
 #[test]
 fn set_filter_with_jlist() {
   read_and_parse::test("testdata/sets.tla", "Set Filter with Jlist");
 }
-

@@ -9,4 +9,3 @@ mod read_and_parse;
 fn unicode_number_sets() {
   read_and_parse::test("testdata/unicode/numbers-unicode.tla", "Unicode Number Sets");
 }
-

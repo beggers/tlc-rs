@@ -9,4 +9,3 @@ mod read_and_parse;
 fn string_with_comment_start() {
   read_and_parse::test("testdata/exclude/sany/string.tla", "String with comment start");
 }
-

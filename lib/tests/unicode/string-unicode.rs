@@ -9,4 +9,3 @@ mod read_and_parse;
 fn unicode_string() {
   read_and_parse::test("testdata/unicode/string-unicode.tla", "Unicode String");
 }
-

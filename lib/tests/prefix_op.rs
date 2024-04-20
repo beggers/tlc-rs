@@ -10,27 +10,22 @@ fn prefix_operator_definition() {
   read_and_parse::test("testdata/prefix_op.tla", "Prefix Operator Definition");
 }
 
-
 #[test]
 fn prefix_operator_declaration_as_parameter() {
   read_and_parse::test("testdata/prefix_op.tla", "Prefix Operator Declaration as Parameter");
 }
-
 
 #[test]
 fn prefix_operator_application() {
   read_and_parse::test("testdata/prefix_op.tla", "Prefix Operator Application");
 }
 
-
 #[test]
 fn prefix_operator_references() {
   read_and_parse::test("testdata/prefix_op.tla", "Prefix Operator References");
 }
 
-
 #[test]
 fn nonfix_prefix_operators() {
   read_and_parse::test("testdata/prefix_op.tla", "Nonfix Prefix Operators");
 }
-

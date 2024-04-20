@@ -10,21 +10,17 @@ fn multiple_modules() {
   read_and_parse::test("testdata/exclude/sany/modules.tla", "Multiple modules");
 }
 
-
 #[test]
 fn extramodular_text() {
   read_and_parse::test("testdata/exclude/sany/modules.tla", "Extramodular Text");
 }
-
 
 #[test]
 fn tricky_extramodular_text() {
   read_and_parse::test("testdata/exclude/sany/modules.tla", "Tricky Extramodular Text");
 }
 
-
 #[test]
 fn interleaved_extramodular_text() {
   read_and_parse::test("testdata/exclude/sany/modules.tla", "Interleaved Extramodular Text");
 }
-

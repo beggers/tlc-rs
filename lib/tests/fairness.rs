@@ -10,27 +10,22 @@ fn basic_weak_fairness() {
   read_and_parse::test("testdata/fairness.tla", "Basic Weak Fairness");
 }
 
-
 #[test]
 fn basic_strong_fairness() {
   read_and_parse::test("testdata/fairness.tla", "Basic Strong Fairness");
 }
-
 
 #[test]
 fn weak_fairness_ambiguity() {
   read_and_parse::test("testdata/fairness.tla", "Weak Fairness Ambiguity");
 }
 
-
 #[test]
 fn strong_fairness_ambiguity() {
   read_and_parse::test("testdata/fairness.tla", "Strong Fairness Ambiguity");
 }
 
-
 #[test]
 fn fairness_with_tuple_literal() {
   read_and_parse::test("testdata/fairness.tla", "Fairness with Tuple Literal");
 }
-

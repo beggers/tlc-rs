@@ -10,27 +10,22 @@ fn postfix_operator_definition() {
   read_and_parse::test("testdata/postfix_op.tla", "Postfix Operator Definition");
 }
 
-
 #[test]
 fn postfix_operator_declaration_as_parameter() {
   read_and_parse::test("testdata/postfix_op.tla", "Postfix Operator Declaration as Parameter");
 }
-
 
 #[test]
 fn postfix_operator_application() {
   read_and_parse::test("testdata/postfix_op.tla", "Postfix Operator Application");
 }
 
-
 #[test]
 fn postfix_operators_as_parameters() {
   read_and_parse::test("testdata/postfix_op.tla", "Postfix Operators as Parameters");
 }
 
-
 #[test]
 fn nonfix_postfix_operators() {
   read_and_parse::test("testdata/postfix_op.tla", "Nonfix Postfix Operators");
 }
-

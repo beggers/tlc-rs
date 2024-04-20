@@ -10,27 +10,22 @@ fn basic_string() {
   read_and_parse::test("testdata/string.tla", "Basic String");
 }
 
-
 #[test]
 fn escape_quote_string() {
   read_and_parse::test("testdata/string.tla", "Escape Quote String");
 }
-
 
 #[test]
 fn escape_escape_string() {
   read_and_parse::test("testdata/string.tla", "Escape Escape String");
 }
 
-
 #[test]
 fn string_with_block_comment_start() {
   read_and_parse::test("testdata/string.tla", "String with block comment start");
 }
 
-
 #[test]
 fn string_set() {
   read_and_parse::test("testdata/string.tla", "String Set");
 }
-

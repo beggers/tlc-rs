@@ -10,9 +10,7 @@ fn tuple_literal() {
   read_and_parse::test("testdata/unicode/tuples-unicode.tla", "Tuple Literal");
 }
 
-
 #[test]
 fn tuple_literal_with_jlist() {
   read_and_parse::test("testdata/unicode/tuples-unicode.tla", "Tuple Literal with Jlist");
 }
-

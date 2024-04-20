@@ -10,21 +10,17 @@ fn single_module() {
   read_and_parse::test("testdata/modules.tla", "Single module");
 }
 
-
 #[test]
 fn module_with_extends() {
   read_and_parse::test("testdata/modules.tla", "Module with EXTENDS");
 }
-
 
 #[test]
 fn nested_modules() {
   read_and_parse::test("testdata/modules.tla", "Nested modules");
 }
 
-
 #[test]
 fn multiple_nested_modules() {
   read_and_parse::test("testdata/modules.tla", "Multiple Nested modules");
 }
-

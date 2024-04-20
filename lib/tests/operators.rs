@@ -10,9 +10,7 @@ fn minus_and_negative() {
   read_and_parse::test("testdata/operators.tla", "Minus and Negative");
 }
 
-
 #[test]
 fn lambda_parameter() {
   read_and_parse::test("testdata/operators.tla", "LAMBDA Parameter");
 }
-

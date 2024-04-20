@@ -10,27 +10,22 @@ fn basic_snippet() {
   read_and_parse::test("testdata/exclude/sany/snippet.tla", "Basic Snippet");
 }
 
-
 #[test]
 fn snippet_with_multiple_definitions() {
   read_and_parse::test("testdata/exclude/sany/snippet.tla", "Snippet with Multiple Definitions");
 }
-
 
 #[test]
 fn snippet_with_jlist() {
   read_and_parse::test("testdata/exclude/sany/snippet.tla", "Snippet with Jlist");
 }
 
-
 #[test]
 fn snippet_with_proof() {
   read_and_parse::test("testdata/exclude/sany/snippet.tla", "Snippet with Proof");
 }
 
-
 #[test]
 fn snippet_with_pluscal() {
   read_and_parse::test("testdata/exclude/sany/snippet.tla", "Snippet with PlusCal");
 }
-

@@ -10,27 +10,22 @@ fn variable_declaration() {
   read_and_parse::test("testdata/unit.tla", "VARIABLE Declaration");
 }
 
-
 #[test]
 fn constant_declaration() {
   read_and_parse::test("testdata/unit.tla", "CONSTANT Declaration");
 }
-
 
 #[test]
 fn basic_operator_definition() {
   read_and_parse::test("testdata/unit.tla", "Basic Operator Definition");
 }
 
-
 #[test]
 fn instance_with_jlist_substitutions() {
   read_and_parse::test("testdata/unit.tla", "INSTANCE With Jlist Substitutions");
 }
 
-
 #[test]
 fn instance_with_operator_substitutions() {
   read_and_parse::test("testdata/unit.tla", "INSTANCE With Operator Substitutions");
 }
-

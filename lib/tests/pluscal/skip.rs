@@ -9,4 +9,3 @@ mod read_and_parse;
 fn pluscal_skip() {
   read_and_parse::test("testdata/pluscal/skip.tla", "PlusCal Skip");
 }
-

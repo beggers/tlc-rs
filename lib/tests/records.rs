@@ -10,33 +10,27 @@ fn record_literal() {
   read_and_parse::test("testdata/records.tla", "Record Literal");
 }
 
-
 #[test]
 fn record_literal_with_jlist() {
   read_and_parse::test("testdata/records.tla", "Record Literal with JList");
 }
-
 
 #[test]
 fn set_of_records() {
   read_and_parse::test("testdata/records.tla", "Set of Records");
 }
 
-
 #[test]
 fn set_of_records_with_jlist() {
   read_and_parse::test("testdata/records.tla", "Set of Records with JList");
 }
-
 
 #[test]
 fn record_value() {
   read_and_parse::test("testdata/records.tla", "Record Value");
 }
 
-
 #[test]
 fn record_value_inside_jlist() {
   read_and_parse::test("testdata/records.tla", "Record Value Inside Jlist");
 }
-

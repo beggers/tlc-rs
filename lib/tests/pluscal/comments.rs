@@ -10,9 +10,7 @@ fn pluscal_comments() {
   read_and_parse::test("testdata/pluscal/comments.tla", "PlusCal Comments");
 }
 
-
 #[test]
 fn pluscal_fair_algorithm() {
   read_and_parse::test("testdata/pluscal/comments.tla", "PlusCal Fair Algorithm");
 }
-

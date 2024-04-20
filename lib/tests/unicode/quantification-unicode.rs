@@ -10,21 +10,17 @@ fn bounded_quantification() {
   read_and_parse::test("testdata/unicode/quantification-unicode.tla", "Bounded Quantification");
 }
 
-
 #[test]
 fn unbounded_quantification() {
   read_and_parse::test("testdata/unicode/quantification-unicode.tla", "Unbounded Quantification");
 }
-
 
 #[test]
 fn bounded_choose() {
   read_and_parse::test("testdata/unicode/quantification-unicode.tla", "Bounded CHOOSE");
 }
 
-
 #[test]
 fn unbounded_choose() {
   read_and_parse::test("testdata/unicode/quantification-unicode.tla", "Unbounded CHOOSE");
 }
-

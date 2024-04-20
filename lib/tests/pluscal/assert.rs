@@ -9,4 +9,3 @@ mod read_and_parse;
 fn pluscal_assert() {
   read_and_parse::test("testdata/pluscal/assert.tla", "PlusCal Assert");
 }
-

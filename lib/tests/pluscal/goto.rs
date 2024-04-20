@@ -9,4 +9,3 @@ mod read_and_parse;
 fn pluscal_goto() {
   read_and_parse::test("testdata/pluscal/goto.tla", "PlusCal Goto");
 }
-

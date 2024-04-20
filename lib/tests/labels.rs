@@ -10,9 +10,7 @@ fn basic_label() {
   read_and_parse::test("testdata/labels.tla", "Basic Label");
 }
 
-
 #[test]
 fn label_with_parameters() {
   read_and_parse::test("testdata/labels.tla", "Label With Parameters");
 }
-

@@ -10,87 +10,72 @@ fn basic_disjlist() {
   read_and_parse::test("testdata/disjlist.tla", "Basic Disjlist");
 }
 
-
 #[test]
 fn inline_disjlist() {
   read_and_parse::test("testdata/disjlist.tla", "Inline Disjlist");
 }
-
 
 #[test]
 fn separated_disjlist() {
   read_and_parse::test("testdata/disjlist.tla", "Separated Disjlist");
 }
 
-
 #[test]
 fn multiline_disjlist() {
   read_and_parse::test("testdata/disjlist.tla", "Multiline Disjlist");
 }
-
 
 #[test]
 fn nested_disjlist() {
   read_and_parse::test("testdata/disjlist.tla", "Nested Disjlist");
 }
 
-
 #[test]
 fn infix_op_disjlist() {
   read_and_parse::test("testdata/disjlist.tla", "Infix Op Disjlist");
 }
-
 
 #[test]
 fn division_infix_op_disjlist() {
   read_and_parse::test("testdata/disjlist.tla", "Division Infix Op Disjlist");
 }
 
-
 #[test]
 fn infix_op_terminated_disjlist() {
   read_and_parse::test("testdata/disjlist.tla", "Infix Op Terminated Disjlist");
 }
-
 
 #[test]
 fn division_infix_op_terminated_disjlist() {
   read_and_parse::test("testdata/disjlist.tla", "Division Infix Op Terminated Disjlist");
 }
 
-
 #[test]
 fn not_a_disjlist() {
   read_and_parse::test("testdata/disjlist.tla", "Not a Disjlist");
 }
-
 
 #[test]
 fn disjlist_with_parentheses() {
   read_and_parse::test("testdata/disjlist.tla", "Disjlist with Parentheses");
 }
 
-
 #[test]
 fn disjlist_terminated_by_parentheses() {
   read_and_parse::test("testdata/disjlist.tla", "Disjlist Terminated by Parentheses");
 }
-
 
 #[test]
 fn nested_disjlist_terminated_by_parentheses() {
   read_and_parse::test("testdata/disjlist.tla", "Nested Disjlist Terminated by Parentheses");
 }
 
-
 #[test]
 fn disjlist_with_empty_tuple() {
   read_and_parse::test("testdata/disjlist.tla", "Disjlist with Empty Tuple");
 }
 
-
 #[test]
 fn disjlist_with_empty_set() {
   read_and_parse::test("testdata/disjlist.tla", "Disjlist with Empty Set");
 }
-

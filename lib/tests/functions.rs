@@ -10,39 +10,32 @@ fn function_definition() {
   read_and_parse::test("testdata/functions.tla", "Function Definition");
 }
 
-
 #[test]
 fn function_evaluation() {
   read_and_parse::test("testdata/functions.tla", "Function Evaluation");
 }
-
 
 #[test]
 fn jlist_inside_function_evaluation() {
   read_and_parse::test("testdata/functions.tla", "Jlist Inside Function Evaluation");
 }
 
-
 #[test]
 fn function_literal() {
   read_and_parse::test("testdata/functions.tla", "Function Literal");
 }
-
 
 #[test]
 fn function_literal_with_multiple_parameters_and_jlist() {
   read_and_parse::test("testdata/functions.tla", "Function Literal with Multiple Parameters and Jlist");
 }
 
-
 #[test]
 fn function_set() {
   read_and_parse::test("testdata/functions.tla", "Function Set");
 }
 
-
 #[test]
 fn jlist_inside_function_set() {
   read_and_parse::test("testdata/functions.tla", "Jlist Inside Function Set");
 }
-

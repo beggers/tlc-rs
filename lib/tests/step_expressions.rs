@@ -10,15 +10,12 @@ fn step_expression_or_stuttering() {
   read_and_parse::test("testdata/step_expressions.tla", "Step Expression Or Stuttering");
 }
 
-
 #[test]
 fn step_expression_no_stuttering() {
   read_and_parse::test("testdata/step_expressions.tla", "Step Expression No Stuttering");
 }
 
-
 #[test]
 fn step_expressions_with_jlist() {
   read_and_parse::test("testdata/step_expressions.tla", "Step Expressions with Jlist");
 }
-

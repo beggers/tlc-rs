@@ -28,12 +28,12 @@ TEST_FUNCTION_TEMPLATE = """
 fn {rust_test_function_name}() {{
   read_and_parse::test("{filename}", "{tla_test_name}");
 }}
-
 """
-# Match everything of the form "
+# Match everything of the form
 # ==================|||
 # Test Name
 # ==================|||
+# TODO this misses some cases in let_in and regression
 TLA_TEST_REGEX = r"===+\|\|\|\s*([\w\s]+)\s*===+\|\|\|"
 
 
