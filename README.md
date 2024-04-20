@@ -8,7 +8,13 @@ All modules which need to be integration tested (e.g. parsing) live in `lib/`, w
 ## Testing
 
 ```sh
-cargo test --all  # Run tests for application and library
+# Run all tests for application and library
+cargo test --all --no-fail-fast
+```
+
+```sh
+# Run only a single file
+cargo test -p lib --test string  # Replace "string" with the file you want
 ```
 
 ## Requirements
