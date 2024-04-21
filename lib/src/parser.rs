@@ -1,4 +1,13 @@
-use crate::ast::{Expr, Ident, Mod, NumberLit, OpDefn, SourceFile, StringLit};
+use crate::ast::{
+  Expr,
+  Ident,
+  Mod,
+  NumberLit,
+  NumberSetLit,
+  OpDefn,
+  SourceFile,
+  StringLit
+};
 
 use pest::{iterators::Pair, Parser};
 use pest_derive::Parser;
@@ -18,7 +27,7 @@ pub fn parse_file(filename: &str) -> Result<SourceFile, pest::error::Error<Rule>
 
 // Public for testing.
 pub fn parse_string(input: &str) -> Result<SourceFile, pest::error::Error<Rule>> {
-    let parsed = TLAParser::parse(Rule::source_file, input)?.next().unwrap();
+    let parsed = TLAParser::parse(Rule::source_file, input).unwrap().next().unwrap();
     // TODO this correctly grabs the first source file, but it should fail
     // if there's extra crap afterwards.
     let ast = parse_source_file(parsed);
@@ -62,7 +71,17 @@ fn parse_number_lit(pair: Pair<Rule>) -> NumberLit {
             let value = inner_pair.as_str().parse::<f64>().unwrap();
             NumberLit::RealLit { value: value }
         }
-        _ => panic!("Unexpected rule"),
+        _ => panic!("Unexpected rule in parse_number_lit: {:?}", inner_pair.as_rule()),
+    }
+}
+
+fn parse_number_set_lit(pair: Pair<Rule>) -> NumberSetLit {
+    let inner_pair = pair.into_inner().next().unwrap();
+    match inner_pair.as_rule() {
+        Rule::nat_numbers_lit => NumberSetLit::NatSetLit,
+        Rule::int_numbers_lit => NumberSetLit::IntSetLit,
+        Rule::real_numbers_lit => NumberSetLit::RealSetLit,
+        _ => panic!("Unexpected rule in parse_number_set_lit: {:?}", inner_pair.as_rule()),
     }
 }
 
@@ -118,6 +137,12 @@ fn parse_expr(pair: Pair<Rule>) -> Expr {
             let number_lit = parse_number_lit(inner_pair);
             Expr::NumberLit {
                 number_lit: number_lit,
+            }
+        }
+        Rule::number_set_lit => {
+            let number_set_lit = parse_number_set_lit(inner_pair);
+            Expr::NumberSetLit {
+                number_set_lit: number_set_lit,
             }
         }
         _ => panic!("Unexpected rule in parse_expr: {:?}", inner_pair.as_rule()),

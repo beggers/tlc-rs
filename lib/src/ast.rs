@@ -17,6 +17,13 @@ pub enum NumberLit {
 }
 
 #[derive(Clone, Debug, PartialEq)]
+pub enum NumberSetLit {
+    NatSetLit,
+    IntSetLit,
+    RealSetLit,
+}
+
+#[derive(Clone, Debug, PartialEq)]
 pub enum StringLit {
     StringLit { value: String },
 }
@@ -34,6 +41,7 @@ pub enum Ident {
 pub enum Expr {
     StringLit { string_lit: StringLit },
     NumberLit { number_lit: NumberLit },
+    NumberSetLit { number_set_lit: NumberSetLit },
 }
 
 #[derive(Clone, Debug, PartialEq)]
