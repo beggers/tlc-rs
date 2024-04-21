@@ -214,6 +214,10 @@ fn parse_expr(pair: Pair<Rule>) -> Expr {
                 value: ident
             }
         }
+        Rule::expr => {
+            // Parens
+            return parse_expr(inner_pair);
+        }
         Rule::seq_lit => {
             let seq_lit = parse_seq_lit(inner_pair);
             Expr::SeqLit { value: seq_lit }

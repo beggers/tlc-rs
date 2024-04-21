@@ -76,7 +76,7 @@ extends_list = {
 // ===================
 
 expr = {
-  (literal_value | ident | seq_lit) ~ NEWLINE*
+  (literal_value | ident | seq_lit | "(" ~ expr ~ ")") ~ NEWLINE*
 }
 
 op_defn = {

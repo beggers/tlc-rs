@@ -28,7 +28,7 @@ def main():
     # Parse the output to get the number of tests passed
     # and the number of tests failed
     passed = 0
-    total = 0
+    failed = 0
     for line in output.split("\n"):
         if not line.startswith("test result:"):
             continue
@@ -39,9 +39,9 @@ def main():
             print("Error parsing test results")
             return
         passed += int(match.group(1))
-        total += passed + int(match.group(2))
+        failed += int(match.group(2))
 
-    print(f"Tests passed: {passed}/{total}")
+    print(f"Tests passed: {passed}/{passed + failed}")
 
 
 if __name__ == "__main__":
