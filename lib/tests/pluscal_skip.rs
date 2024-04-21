@@ -4,6 +4,6 @@
 mod read_and_parse;
 
 #[test]
-fn use__hide_declarations() {
-    read_and_parse::test("testdata/use_or_hide.tla", "Use  Hide Declarations");
+fn pluscal_skip() {
+    read_and_parse::test("testdata/pluscal/skip.tla", "PlusCal Skip");
 }

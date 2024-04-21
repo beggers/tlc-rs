@@ -1,15 +1,6 @@
 use crate::ast::{
-  Expr,
-  ExtendsList,
-  Ident,
-  LiteralValue,
-  NumberLit,
-  NumberSetLit,
-  OpDefn,
-  SeqLit,
-  SourceFile,
-  TLAMod,
-  TLAModItem,
+    Expr, ExtendsList, Ident, LiteralValue, NumberLit, NumberSetLit, OpDefn, SeqLit, SourceFile,
+    TLAMod, TLAModItem,
 };
 
 use pest::{iterators::Pair, Parser};
@@ -30,7 +21,10 @@ pub fn parse_file(filename: &str) -> Result<SourceFile, pest::error::Error<Rule>
 
 // Public for testing.
 pub fn parse_string(input: &str) -> Result<SourceFile, pest::error::Error<Rule>> {
-    let parsed = TLAParser::parse(Rule::source_file, input).unwrap().next().unwrap();
+    let parsed = TLAParser::parse(Rule::source_file, input)
+        .unwrap()
+        .next()
+        .unwrap();
     // TODO this correctly grabs the first source file, but it should fail
     // if there's extra crap afterwards.
     let ast = parse_source_file(parsed);
@@ -55,15 +49,11 @@ fn parse_literal_value(pair: Pair<Rule>) -> LiteralValue {
     match inner_pair.as_rule() {
         Rule::string_lit => {
             let string_lit = parse_string_lit(inner_pair);
-            LiteralValue::StringLit {
-                value: string_lit,
-            }
+            LiteralValue::StringLit { value: string_lit }
         }
         Rule::number_lit => {
             let number_lit = parse_number_lit(inner_pair);
-            LiteralValue::NumberLit {
-                value: number_lit,
-            }
+            LiteralValue::NumberLit { value: number_lit }
         }
         Rule::number_set_lit => {
             let number_set_lit = parse_number_set_lit(inner_pair);
@@ -72,7 +62,10 @@ fn parse_literal_value(pair: Pair<Rule>) -> LiteralValue {
             }
         }
         Rule::string_set_lit => LiteralValue::StringSetLit,
-        _ => panic!("Unexpected rule in parse_literal_value: {:?}", inner_pair.as_rule()),
+        _ => panic!(
+            "Unexpected rule in parse_literal_value: {:?}",
+            inner_pair.as_rule()
+        ),
     }
 }
 
@@ -104,7 +97,10 @@ fn parse_number_lit(pair: Pair<Rule>) -> NumberLit {
             let value = inner_pair.as_str().parse::<f64>().unwrap();
             NumberLit::RealLit { value: value }
         }
-        _ => panic!("Unexpected rule in parse_number_lit: {:?}", inner_pair.as_rule()),
+        _ => panic!(
+            "Unexpected rule in parse_number_lit: {:?}",
+            inner_pair.as_rule()
+        ),
     }
 }
 
@@ -114,7 +110,10 @@ fn parse_number_set_lit(pair: Pair<Rule>) -> NumberSetLit {
         Rule::nat_numbers_lit => NumberSetLit::NatSetLit,
         Rule::int_numbers_lit => NumberSetLit::IntSetLit,
         Rule::real_numbers_lit => NumberSetLit::RealSetLit,
-        _ => panic!("Unexpected rule in parse_number_set_lit: {:?}", inner_pair.as_rule()),
+        _ => panic!(
+            "Unexpected rule in parse_number_set_lit: {:?}",
+            inner_pair.as_rule()
+        ),
     }
 }
 
@@ -149,26 +148,27 @@ fn parse_tla_mod(pair: Pair<Rule>) -> TLAMod {
     let inner_pair = inner_pairs.next();
     match inner_pair {
         None => {}
-        Some(inner_pair) => {
-            match inner_pair.as_rule() {
-                Rule::op_defn => {
-                    items.push(TLAModItem::OpDefn {
-                        op_defn: parse_op_defn(inner_pair),
-                    });
-                }
-                Rule::tla_mod => {
-                    items.push(TLAModItem::TLAMod {
-                        tla_mod: parse_tla_mod(inner_pair),
-                    });
-                }
-                Rule::extends_list => {
-                    items.push(TLAModItem::ExtendsList {
-                        extends_list: parse_extends_list(inner_pair),
-                    });
-                }
-                _ => panic!("Unexpected rule in parse_tla_mod: {:?}", inner_pair.as_rule()),
+        Some(inner_pair) => match inner_pair.as_rule() {
+            Rule::op_defn => {
+                items.push(TLAModItem::OpDefn {
+                    op_defn: parse_op_defn(inner_pair),
+                });
             }
-        }
+            Rule::tla_mod => {
+                items.push(TLAModItem::TLAMod {
+                    tla_mod: parse_tla_mod(inner_pair),
+                });
+            }
+            Rule::extends_list => {
+                items.push(TLAModItem::ExtendsList {
+                    extends_list: parse_extends_list(inner_pair),
+                });
+            }
+            _ => panic!(
+                "Unexpected rule in parse_tla_mod: {:?}",
+                inner_pair.as_rule()
+            ),
+        },
     }
     TLAMod {
         ident: ident,
@@ -210,9 +210,7 @@ fn parse_expr(pair: Pair<Rule>) -> Expr {
         }
         Rule::seq_lit => {
             let seq_lit = parse_seq_lit(inner_pair);
-            Expr::SeqLit {
-                value: seq_lit,
-            }
+            Expr::SeqLit { value: seq_lit }
         }
         _ => panic!("Unexpected rule in parse_expr: {:?}", inner_pair.as_rule()),
     }

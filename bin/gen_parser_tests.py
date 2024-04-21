@@ -11,6 +11,7 @@
 
 import os
 import re
+import string
 
 LIB_DIR = "lib"
 TESTDATA_DIR = "testdata"
@@ -34,11 +35,16 @@ fn {rust_test_function_name}() {{
 # Test Name
 # ==================|||
 # TODO this misses some cases in let_in and regression
-TLA_TEST_REGEX = r"===+\|\|\|\s*([\w\s]+)\s*===+\|\|\|"
+TLA_TEST_REGEX = r"===+\|\|\|\s*(.+)\s*===+\|\|\|"
 
 
 def gen_test_file_name(filename):
-  filename = filename.replace(TESTDATA_DIR, TEST_DIR)
+  # Replace subdirectories of LIB_DIR/TEST_DIR with underscores
+  filename = filename.replace(LIB_DIR + "/", "")
+  filename = filename.replace(TESTDATA_DIR + "/", "")
+  filename = filename.replace("/", "_")
+  filename = os.path.join(LIB_DIR, TEST_DIR, filename)
+  filename = filename.replace("-", "_")
   return filename.replace(".tla", ".rs")
 
 
@@ -66,7 +72,10 @@ def get_all_tla_file_names():
 def get_all_test_names(filename):
   with open(filename, "r") as f:
     contents = f.read()
-    return map(lambda s: s.strip(), re.findall(TLA_TEST_REGEX, contents), )
+    return map(
+      lambda s: s.translate(s.strip().maketrans('', '', string.punctuation)),
+      re.findall(TLA_TEST_REGEX, contents)
+    )
 
 
 def main():
@@ -74,7 +83,6 @@ def main():
   for tla_test_file in tla_test_files:
     tla_test_names = get_all_test_names(tla_test_file)
     test_file = gen_test_file_name(tla_test_file)
-    os.makedirs(os.path.dirname(test_file), exist_ok=True)
     with open(test_file, "w") as f:
       f.write(TEST_FILE_HEADER)
       for tla_test_name in tla_test_names:

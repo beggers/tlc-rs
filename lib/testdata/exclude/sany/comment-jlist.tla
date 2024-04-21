@@ -91,29 +91,6 @@ op ==
 (double_line)))
 
 ====================|||
-Block Comment in Disjlist
-====================|||
-
----- MODULE Test ----
-op ==
-  \/ 1
-(* this should be ignored *)
-  \/ 2
-====
-
---------------------|||
-
-(source_file (module (header_line) (identifier) (header_line)
-  (operator_definition (identifier) (def_eq)
-    (disj_list
-      (disj_item (bullet_disj) (nat_number))
-      (block_comment (block_comment_text))
-      (disj_item (bullet_disj) (nat_number))
-    )
-  )
-(double_line)))
-
-====================|||
 Block Comment Preceding Jlist Bullet
 ====================|||
 

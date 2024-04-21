@@ -4,9 +4,9 @@
 mod read_and_parse;
 
 #[test]
-fn operators_with_colon_prefixes__jlists_gh87() {
+fn string_with_comment_start() {
     read_and_parse::test(
-        "testdata/regression.tla",
-        "Operators with Colon Prefixes  Jlists GH87",
+        "testdata/exclude/sany/string.tla",
+        "String with comment start",
     );
 }

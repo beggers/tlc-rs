@@ -4,9 +4,9 @@
 mod read_and_parse;
 
 #[test]
-fn operators_with_colon_prefixes__jlists_gh87() {
+fn decimal_no_leading_zero_gh596() {
     read_and_parse::test(
-        "testdata/regression.tla",
-        "Operators with Colon Prefixes  Jlists GH87",
+        "testdata/exclude/sany/number.tla",
+        "Decimal No Leading Zero GH596",
     );
 }

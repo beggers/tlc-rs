@@ -33,3 +33,11 @@ fn multiple_nested_record_updates_with_dot_syntax() {
         "Multiple nested record updates with dot syntax",
     );
 }
+
+#[test]
+fn multiple_nested_record_updates_with_mixed_dotfunction_syntax() {
+    read_and_parse::test(
+        "testdata/except.tla",
+        "Multiple nested record updates with mixed dotfunction syntax",
+    );
+}

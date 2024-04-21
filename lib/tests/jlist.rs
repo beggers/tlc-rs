@@ -22,3 +22,11 @@ fn two_mismatched_jlists() {
 fn nested_alternating_jlists() {
     read_and_parse::test("testdata/jlist.tla", "Nested Alternating Jlists");
 }
+
+#[test]
+fn jlists_containing_colonprefixed_infix_operators_gh87() {
+    read_and_parse::test(
+        "testdata/jlist.tla",
+        "Jlists Containing ColonPrefixed Infix Operators GH87",
+    );
+}

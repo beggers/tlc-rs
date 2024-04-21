@@ -14,6 +14,21 @@ fn inline_conjlist() {
 }
 
 #[test]
+fn startofline_conjlist() {
+    read_and_parse::test("testdata/conjlist.tla", "StartofLine Conjlist");
+}
+
+#[test]
+fn leftshifted_conjlist() {
+    read_and_parse::test("testdata/conjlist.tla", "LeftShifted Conjlist");
+}
+
+#[test]
+fn rightshifted_conjlist() {
+    read_and_parse::test("testdata/conjlist.tla", "RightShifted Conjlist");
+}
+
+#[test]
 fn separated_conjlist() {
     read_and_parse::test("testdata/conjlist.tla", "Separated Conjlist");
 }
@@ -26,6 +41,11 @@ fn multiline_conjlist() {
 #[test]
 fn nested_conjlist() {
     read_and_parse::test("testdata/conjlist.tla", "Nested Conjlist");
+}
+
+#[test]
+fn startofline_nested_conjlist() {
+    read_and_parse::test("testdata/conjlist.tla", "StartofLine Nested Conjlist");
 }
 
 #[test]
@@ -75,6 +95,24 @@ fn nested_conjlist_terminated_by_parentheses() {
         "testdata/conjlist.tla",
         "Nested Conjlist Terminated by Parentheses",
     );
+}
+
+#[test]
+fn doublenested_conjlist_terminated_by_parentheses() {
+    read_and_parse::test(
+        "testdata/conjlist.tla",
+        "DoubleNested Conjlist Terminated by Parentheses",
+    );
+}
+
+#[test]
+fn moduleendterminated_conjlist() {
+    read_and_parse::test("testdata/conjlist.tla", "ModuleEndTerminated Conjlist");
+}
+
+#[test]
+fn keywordunitterminated_conjlist() {
+    read_and_parse::test("testdata/conjlist.tla", "KeywordUnitTerminated Conjlist");
 }
 
 #[test]

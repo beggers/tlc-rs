@@ -4,8 +4,24 @@
 mod read_and_parse;
 
 #[test]
+fn lexicallyconflicting_nonfix_operators() {
+    read_and_parse::test(
+        "testdata/operators.tla",
+        "LexicallyConflicting Nonfix Operators",
+    );
+}
+
+#[test]
 fn minus_and_negative() {
     read_and_parse::test("testdata/operators.tla", "Minus and Negative");
+}
+
+#[test]
+fn higherorder_operator_parameter_declarations() {
+    read_and_parse::test(
+        "testdata/operators.tla",
+        "HigherOrder Operator Parameter Declarations",
+    );
 }
 
 #[test]

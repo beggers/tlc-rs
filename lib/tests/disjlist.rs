@@ -14,6 +14,21 @@ fn inline_disjlist() {
 }
 
 #[test]
+fn startofline_disjlist() {
+    read_and_parse::test("testdata/disjlist.tla", "StartofLine Disjlist");
+}
+
+#[test]
+fn leftshifted_disjlist() {
+    read_and_parse::test("testdata/disjlist.tla", "LeftShifted Disjlist");
+}
+
+#[test]
+fn rightshifted_disjlist() {
+    read_and_parse::test("testdata/disjlist.tla", "RightShifted Disjlist");
+}
+
+#[test]
 fn separated_disjlist() {
     read_and_parse::test("testdata/disjlist.tla", "Separated Disjlist");
 }
@@ -26,6 +41,11 @@ fn multiline_disjlist() {
 #[test]
 fn nested_disjlist() {
     read_and_parse::test("testdata/disjlist.tla", "Nested Disjlist");
+}
+
+#[test]
+fn startofline_nested_disjlist() {
+    read_and_parse::test("testdata/disjlist.tla", "StartofLine Nested Disjlist");
 }
 
 #[test]
@@ -75,6 +95,24 @@ fn nested_disjlist_terminated_by_parentheses() {
         "testdata/disjlist.tla",
         "Nested Disjlist Terminated by Parentheses",
     );
+}
+
+#[test]
+fn doublenested_disjlist_terminated_by_parentheses() {
+    read_and_parse::test(
+        "testdata/disjlist.tla",
+        "DoubleNested Disjlist Terminated by Parentheses",
+    );
+}
+
+#[test]
+fn moduleendterminated_disjlist() {
+    read_and_parse::test("testdata/disjlist.tla", "ModuleEndTerminated Disjlist");
+}
+
+#[test]
+fn keywordunitterminated_disjlist() {
+    read_and_parse::test("testdata/disjlist.tla", "KeywordUnitTerminated Disjlist");
 }
 
 #[test]
