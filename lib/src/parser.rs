@@ -6,6 +6,7 @@ use crate::ast::{
   NumberLit,
   NumberSetLit,
   OpDefn,
+  SeqLit,
   SourceFile,
   TLAMod,
   TLAModItem,
@@ -40,8 +41,14 @@ pub fn parse_string(input: &str) -> Result<SourceFile, pest::error::Error<Rule>>
 // TODO these should be Result<...>.
 
 // ===================
-// Literals
+// Base values
 // ===================
+
+fn parse_ident(pair: Pair<Rule>) -> Ident {
+    Ident::Ident {
+        value: pair.as_str().to_string(),
+    }
+}
 
 fn parse_literal_value(pair: Pair<Rule>) -> LiteralValue {
     let inner_pair = pair.into_inner().next().unwrap();
@@ -112,6 +119,18 @@ fn parse_number_set_lit(pair: Pair<Rule>) -> NumberSetLit {
 }
 
 // ===================
+// Structured literals
+// ===================
+
+fn parse_seq_lit(pair: Pair<Rule>) -> SeqLit {
+    let mut exprs = Vec::new();
+    for inner_pair in pair.into_inner() {
+        exprs.push(parse_expr(inner_pair));
+    }
+    SeqLit::SeqLit { exprs: exprs }
+}
+
+// ===================
 // Files and Modules
 // ===================
 
@@ -169,12 +188,6 @@ fn parse_extends_list(pair: Pair<Rule>) -> ExtendsList {
 // Other things (TODO sort)
 // ===================
 
-fn parse_ident(pair: Pair<Rule>) -> Ident {
-    Ident::Ident {
-        value: pair.as_str().to_string(),
-    }
-}
-
 fn parse_op_defn(pair: Pair<Rule>) -> OpDefn {
     let mut inner_pairs = pair.into_inner();
     let ident = parse_ident(inner_pairs.next().unwrap());
@@ -193,6 +206,12 @@ fn parse_expr(pair: Pair<Rule>) -> Expr {
             let literal_value = parse_literal_value(inner_pair);
             Expr::LiteralValue {
                 value: literal_value,
+            }
+        }
+        Rule::seq_lit => {
+            let seq_lit = parse_seq_lit(inner_pair);
+            Expr::SeqLit {
+                value: seq_lit,
             }
         }
         _ => panic!("Unexpected rule in parse_expr: {:?}", inner_pair.as_rule()),

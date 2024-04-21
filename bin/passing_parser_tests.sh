@@ -28,11 +28,5 @@ function print_failed_tests {
 trap print_failed_tests EXIT
 
 run_test "cargo test -p lib --test modules"
-
 run_test "cargo test -p lib --test number"
-
-run_test "cargo test -p lib --test string basic_string"
-run_test "cargo test -p lib --test string escape_quote_string"
-run_test "cargo test -p lib --test string string_with_block_comment_start"
-run_test "cargo test -p lib --test string string_set"
-
+run_test "cargo test -p lib --test string"

@@ -20,8 +20,10 @@ def_eq = _{ "==" }
 tla_mod_decl = _{ "MODULE" }
 
 // ===================
-// Literals
+// Base values
 // ===================
+
+ident = @{ ASCII_ALPHA ~ (ASCII_ALPHA | ASCII_DIGIT)* }
 
 literal_value = { number_lit | string_lit | number_set_lit | string_set_lit }
 
@@ -48,6 +50,12 @@ char = {
 }
 
 // ===================
+// Structured literals
+// ===================
+
+seq_lit = { "<<" ~ expr ~ ("," ~ expr)* ~ ">>" }
+
+// ===================
 // Files and Modules
 // ===================
 
@@ -67,10 +75,8 @@ extends_list = {
 // Other things (TODO sort)
 // ===================
 
-ident = @{ ASCII_ALPHA ~ (ASCII_ALPHA | ASCII_DIGIT)* }
-
 expr = {
-  (literal_value) ~ NEWLINE*
+  (literal_value | seq_lit) ~ NEWLINE*
 }
 
 op_defn = {

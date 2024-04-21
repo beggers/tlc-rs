@@ -10,8 +10,13 @@
 // TODO should we use Boxes? Feels like we should use Boxes.
 
 // ===================
-// Literals
+// Base values
 // ===================
+#[derive(Clone, Debug, PartialEq)]
+pub enum Ident {
+    Ident { value: String },
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum LiteralValue {
     StringLit { value: String },
@@ -31,6 +36,15 @@ pub enum NumberSetLit {
     NatSetLit,
     IntSetLit,
     RealSetLit,
+}
+
+// ===================
+// Structured literals
+// ===================
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum SeqLit {
+    SeqLit { exprs: Vec<Expr> },
 }
 
 // ===================
@@ -67,13 +81,9 @@ pub struct ExtendsList {
 // ===================
 
 #[derive(Clone, Debug, PartialEq)]
-pub enum Ident {
-    Ident { value: String },
-}
-
-#[derive(Clone, Debug, PartialEq)]
 pub enum Expr {
     LiteralValue { value: LiteralValue },
+    SeqLit { value: SeqLit },
 }
 
 #[derive(Clone, Debug, PartialEq)]
