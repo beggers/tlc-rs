@@ -83,6 +83,7 @@ pub struct ExtendsList {
 #[derive(Clone, Debug, PartialEq)]
 pub enum Expr {
     LiteralValue { value: LiteralValue },
+    Ident { value: Ident },
     SeqLit { value: SeqLit },
 }
 

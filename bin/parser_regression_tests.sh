@@ -30,3 +30,5 @@ trap print_failed_tests EXIT
 run_test "cargo test -p lib --test modules"
 run_test "cargo test -p lib --test number"
 run_test "cargo test -p lib --test string"
+
+run_test "cargo test -p lib --test expressions -- --exact tuple_literal"
