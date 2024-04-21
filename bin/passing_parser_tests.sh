@@ -4,7 +4,7 @@
 #
 # When all test cases for a file pass, collapse them into one line!
 
-cargo test -p lib --test number all_number_sets
+cargo test -p lib --test number
 
 cargo test -p lib --test string basic_string
 cargo test -p lib --test string escape_quote_string
