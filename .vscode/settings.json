@@ -6,5 +6,9 @@
   },
   "flake8.args": [
     "--indent-size=2",
-  ]
+  ],
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  }
 }

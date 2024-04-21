@@ -49,7 +49,8 @@ def gen_test_file_name(filename):
 
 
 def gen_test_function_name(tla_test_name):
-  return tla_test_name.strip().replace(" ", "_").lower()
+  tla_test_name = tla_test_name.strip().replace(" ", "_").lower()
+  return tla_test_name.replace("__", "_")
 
 
 def gen_test_function(filename, tla_test_name):

@@ -4,7 +4,7 @@
 mod read_and_parse;
 
 #[test]
-fn operators_with_colon_prefixes__jlists_gh87() {
+fn operators_with_colon_prefixes_jlists_gh87() {
     read_and_parse::test(
         "testdata/regression.tla",
         "Operators with Colon Prefixes  Jlists GH87",

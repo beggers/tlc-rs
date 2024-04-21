@@ -59,7 +59,11 @@ pub enum Expr {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum IfThenElse {
-    IfThenElse { cond: Box<Expr>, then_expr: Box<Expr>, else_expr: Box<Expr> },
+    IfThenElse {
+        cond: Box<Expr>,
+        then_expr: Box<Expr>,
+        else_expr: Box<Expr>,
+    },
 }
 
 #[derive(Clone, Debug, PartialEq)]

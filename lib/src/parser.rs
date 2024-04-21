@@ -1,6 +1,6 @@
 use crate::ast::{
-    Expr, ExtendsList, Ident, IfThenElse, LiteralValue, NumberLit, NumberSetLit, OpDefn, SeqLit, SourceFile,
-    TLAMod, TLAModItem, VariableList,
+    Expr, ExtendsList, Ident, IfThenElse, LiteralValue, NumberLit, NumberSetLit, OpDefn, SeqLit,
+    SourceFile, TLAMod, TLAModItem, VariableList,
 };
 
 use pest::{iterators::Pair, Parser};
@@ -145,9 +145,7 @@ fn parse_expr(pair: Pair<Rule>) -> Expr {
         }
         Rule::ident => {
             let ident = parse_ident(inner_pair);
-            Expr::Ident {
-                value: ident
-            }
+            Expr::Ident { value: ident }
         }
         Rule::if_then_else => {
             let if_then_else = parse_if_then_else(inner_pair);
