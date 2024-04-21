@@ -23,6 +23,8 @@ tla_mod_decl = _{ "MODULE" }
 // Literals
 // ===================
 
+literal_value = { number_lit | string_lit | number_set_lit | string_set_lit }
+
 nat_lit = @{ ASCII_DIGIT+ }
 binary_lit = @{ ^"\\b" ~ ( "0" | "1" )+ }
 octal_lit = @{ ^"\\o" ~ ( '0'..'7' )+ }
@@ -34,6 +36,8 @@ nat_numbers_lit = { "Nat" }
 int_numbers_lit = { "Int" }
 real_numbers_lit = { "Real" }
 number_set_lit = { nat_numbers_lit | int_numbers_lit | real_numbers_lit }
+
+string_set_lit = { "STRING" }
 
 string_lit = ${ "\"" ~ inner ~ "\"" }
 inner = @{ char* }
@@ -66,7 +70,7 @@ extends_list = {
 ident = @{ ASCII_ALPHA ~ (ASCII_ALPHA | ASCII_DIGIT)* }
 
 expr = {
-  (string_lit | number_lit | number_set_lit) ~ NEWLINE*
+  (literal_value) ~ NEWLINE*
 }
 
 op_defn = {

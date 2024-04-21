@@ -2,11 +2,11 @@ use crate::ast::{
   Expr,
   ExtendsList,
   Ident,
+  LiteralValue,
   NumberLit,
   NumberSetLit,
   OpDefn,
   SourceFile,
-  StringLit,
   TLAMod,
   TLAModItem,
 };
@@ -43,10 +43,34 @@ pub fn parse_string(input: &str) -> Result<SourceFile, pest::error::Error<Rule>>
 // Literals
 // ===================
 
-fn parse_string_lit(pair: Pair<Rule>) -> StringLit {
-    StringLit::StringLit {
-        value: pair.as_str().to_string(),
+fn parse_literal_value(pair: Pair<Rule>) -> LiteralValue {
+    let inner_pair = pair.into_inner().next().unwrap();
+    match inner_pair.as_rule() {
+        Rule::string_lit => {
+            let string_lit = parse_string_lit(inner_pair);
+            LiteralValue::StringLit {
+                value: string_lit,
+            }
+        }
+        Rule::number_lit => {
+            let number_lit = parse_number_lit(inner_pair);
+            LiteralValue::NumberLit {
+                value: number_lit,
+            }
+        }
+        Rule::number_set_lit => {
+            let number_set_lit = parse_number_set_lit(inner_pair);
+            LiteralValue::NumberSetLit {
+                value: number_set_lit,
+            }
+        }
+        Rule::string_set_lit => LiteralValue::StringSetLit,
+        _ => panic!("Unexpected rule in parse_literal_value: {:?}", inner_pair.as_rule()),
     }
+}
+
+fn parse_string_lit(pair: Pair<Rule>) -> String {
+    pair.as_str().to_string()
 }
 
 fn parse_number_lit(pair: Pair<Rule>) -> NumberLit {
@@ -165,22 +189,10 @@ fn parse_expr(pair: Pair<Rule>) -> Expr {
     let mut inner_pairs = pair.into_inner();
     let inner_pair = inner_pairs.next().unwrap();
     match inner_pair.as_rule() {
-        Rule::string_lit => {
-            let string_lit = parse_string_lit(inner_pair);
-            Expr::StringLit {
-                string_lit: string_lit,
-            }
-        }
-        Rule::number_lit => {
-            let number_lit = parse_number_lit(inner_pair);
-            Expr::NumberLit {
-                number_lit: number_lit,
-            }
-        }
-        Rule::number_set_lit => {
-            let number_set_lit = parse_number_set_lit(inner_pair);
-            Expr::NumberSetLit {
-                number_set_lit: number_set_lit,
+        Rule::literal_value => {
+            let literal_value = parse_literal_value(inner_pair);
+            Expr::LiteralValue {
+                value: literal_value,
             }
         }
         _ => panic!("Unexpected rule in parse_expr: {:?}", inner_pair.as_rule()),

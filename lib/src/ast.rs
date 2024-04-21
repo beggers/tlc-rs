@@ -13,6 +13,14 @@
 // Literals
 // ===================
 #[derive(Clone, Debug, PartialEq)]
+pub enum LiteralValue {
+    StringLit { value: String },
+    NumberLit { value: NumberLit },
+    NumberSetLit { value: NumberSetLit },
+    StringSetLit,
+}
+
+#[derive(Clone, Debug, PartialEq)]
 pub enum NumberLit {
     IntLit { value: i64 },
     RealLit { value: f64 },
@@ -23,11 +31,6 @@ pub enum NumberSetLit {
     NatSetLit,
     IntSetLit,
     RealSetLit,
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub enum StringLit {
-    StringLit { value: String },
 }
 
 // ===================
@@ -70,9 +73,7 @@ pub enum Ident {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Expr {
-    StringLit { string_lit: StringLit },
-    NumberLit { number_lit: NumberLit },
-    NumberSetLit { number_set_lit: NumberSetLit },
+    LiteralValue { value: LiteralValue },
 }
 
 #[derive(Clone, Debug, PartialEq)]
