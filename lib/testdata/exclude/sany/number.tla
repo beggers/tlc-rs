@@ -1,5 +1,5 @@
 ======================|||
-Decimal No Leading Zero (GH596)
+Decimal No Leading Zero GH596
 ======================|||
 
 ---- MODULE Test ----

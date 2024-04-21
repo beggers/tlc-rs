@@ -33,3 +33,5 @@ run_test "cargo test -p lib --test string"
 
 run_test "cargo test -p lib --test expressions -- --exact tuple_literal"
 run_test "cargo test -p lib --test expressions nested"
+
+run_test "cargo test -p lib --test exclude_sany_number"

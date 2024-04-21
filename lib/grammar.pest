@@ -31,7 +31,7 @@ nat_lit = @{ ASCII_DIGIT+ }
 binary_lit = @{ ^"\\b" ~ ( "0" | "1" )+ }
 octal_lit = @{ ^"\\o" ~ ( '0'..'7' )+ }
 hex_lit = @{ ^"\\h" ~ ( ASCII_DIGIT | 'a'..'f' | 'A'..'F' )+ }
-real_lit = @{ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
+real_lit = @{ ASCII_DIGIT* ~ "." ~ ASCII_DIGIT+ }
 number_lit = { real_lit | nat_lit | binary_lit | octal_lit | hex_lit }
 
 nat_numbers_lit = { "Nat" }
