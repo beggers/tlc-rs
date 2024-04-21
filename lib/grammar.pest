@@ -2,8 +2,8 @@
 // Silent parsed rules
 // ===================
 //
-// These are rules which need to be parsed for file correctness but don't need
-// to be tokenized or otherwise used in the AST.
+// These are rules which need to be parsed for file correctness and understanding
+// but don't need to be tokenized or otherwise used in the AST.
 //
 // Wherever there is possible collision with rust keywords, the prefix tla_
 // is used (e.g. modules).
@@ -19,6 +19,24 @@ double_line = _{ "====" ~ "="* }
 
 def_eq = _{ "==" | "≜" }
 set_in = _{ "\\in" | "∈" }
+gets = _{ "<-" | "⟵" | "←" }
+forall = _{ "\\A" | "\\forall" | "∀" }
+exists = _{ "\\E" | "\\exists" | "∃" }
+temporal_forall = _{ "\\AA" }
+temporal_exists = _{ "\\EE" }
+all_map_to = _{ "|->" | "⟼" | "↦" }
+maps_to = _{ "->" | "⟶" | "→" }
+langle_bracket = _{ "<<" | "〈" | "⟨" }
+rangle_bracket = _{ ">>" | "〉" | "⟩" }
+rangle_bracket_sub = _{ ">>_" | "〉_" | "⟩_" }
+case_box = _{ "[]" | "□" }
+case_arrow = _{ "->" | "⟶" | "→" }
+colon = _{ ":" }
+address = _{ "@" }
+label_as = _{ "::" | "∷" }
+placeholder = { "_" }
+bullet_conj = _{ "/\\" | "∧" }
+bullet_disj = _{ "\\/" | "∨" }
 
 constant_list_decl = _{ "CONSTANTS" | "CONSTANT" }
 extends_decl = _{ "EXTENDS" }
@@ -59,7 +77,7 @@ char = {
 // Structured literals
 // ===================
 
-seq_lit = { "<<" ~ expr ~ ("," ~ expr)* ~ ">>" }
+seq_lit = { langle_bracket ~ expr ~ ("," ~ expr)* ~ rangle_bracket }
 
 // ===================
 // Expressions
