@@ -4,6 +4,9 @@
 //
 // These are rules which need to be parsed for file correctness but don't need
 // to be tokenized or otherwise used in the AST.
+//
+// Wherever there is possible collision with rust keywords, the prefix tla_
+// is used (e.g. modules).
 
 // TLA+ is sensitive enough to newlines that it feels like a bad idea
 // to add them here. Only tabs and spaces.
@@ -12,7 +15,7 @@ WHITESPACE = _{ " " | "\t" }
 single_line = _{ "----" ~ "-"* }
 double_line = _{ "====" ~ "="* }
 def_eq = _{ "==" }
-mod_decl = _{ "MODULE" }
+tla_mod_decl = _{ "MODULE" }
 
 // ===================
 // Literals
@@ -52,10 +55,10 @@ op_defn = {
   ident ~ def_eq ~ expr ~ NEWLINE
 }
 
-mod = {
-  NEWLINE* ~ single_line ~ mod_decl ~ ident ~ single_line ~ NEWLINE
-  ~ op_defn*
+tla_mod = {
+  NEWLINE* ~ single_line ~ tla_mod_decl ~ ident ~ single_line ~ NEWLINE
+  ~ (op_defn | tla_mod)*
   ~ double_line ~ NEWLINE*
 }
 
-source_file = { mod+ }
+source_file = { tla_mod+ }

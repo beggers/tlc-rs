@@ -31,6 +31,29 @@ pub enum StringLit {
 }
 
 // ===================
+// Files and Modules
+// ===================
+
+// Things which can go inside of a module. A module contains zero or more
+// of these.
+#[derive(Clone, Debug, PartialEq)]
+pub enum SourceFile {
+    SourceFile { tla_mods: Vec<TLAMod> },
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum TLAModItem {
+    OpDefnTLAModItem { op_defn: OpDefn },
+    TLAModModItem { tla_mod: TLAMod },
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct TLAMod {
+    pub ident: Ident,
+    pub items: Vec<TLAModItem>,
+}
+
+// ===================
 // Other things (TODO sort)
 // ===================
 
@@ -49,15 +72,4 @@ pub enum Expr {
 #[derive(Clone, Debug, PartialEq)]
 pub enum OpDefn {
     SingleExprOpDefn { ident: Ident, expr: Expr },
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub enum Mod {
-    EmptyMod,
-    SingleOpDefnMod { ident: Ident, op_defn: OpDefn },
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub enum SourceFile {
-    SourceFile { mods: Vec<Mod> },
 }

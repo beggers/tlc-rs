@@ -1,12 +1,13 @@
 use crate::ast::{
   Expr,
   Ident,
-  Mod,
   NumberLit,
   NumberSetLit,
   OpDefn,
   SourceFile,
-  StringLit
+  StringLit,
+  TLAMod,
+  TLAModItem,
 };
 
 use pest::{iterators::Pair, Parser};
@@ -86,32 +87,49 @@ fn parse_number_set_lit(pair: Pair<Rule>) -> NumberSetLit {
 }
 
 // ===================
-// Other things (TODO sort)
+// Files and Modules
 // ===================
 
 fn parse_source_file(pair: Pair<Rule>) -> SourceFile {
-    let mut mods = Vec::new();
+    let mut tla_mods = Vec::new();
     for inner_pair in pair.into_inner() {
-        mods.push(parse_mod(inner_pair));
+        tla_mods.push(parse_tla_mod(inner_pair));
     }
-    SourceFile::SourceFile { mods: mods }
+    SourceFile::SourceFile { tla_mods: tla_mods }
 }
 
-fn parse_mod(pair: Pair<Rule>) -> Mod {
+fn parse_tla_mod(pair: Pair<Rule>) -> TLAMod {
     let mut inner_pairs = pair.into_inner();
     let ident = parse_ident(inner_pairs.next().unwrap());
-    let contents = inner_pairs.next();
-    match contents {
-        Some(pair) => {
-            let op_defn = parse_op_defn(pair);
-            Mod::SingleOpDefnMod {
-                ident: ident,
-                op_defn: op_defn,
+    let mut items = Vec::new();
+    let inner_pair = inner_pairs.next();
+    match inner_pair {
+        None => {}
+        Some(inner_pair) => {
+            match inner_pair.as_rule() {
+                Rule::op_defn => {
+                    items.push(TLAModItem::OpDefnTLAModItem {
+                        op_defn: parse_op_defn(inner_pair),
+                    });
+                }
+                Rule::tla_mod => {
+                    items.push(TLAModItem::TLAModModItem {
+                        tla_mod: parse_tla_mod(inner_pair),
+                    });
+                }
+                _ => panic!("Unexpected rule in parse_tla_mod: {:?}", inner_pair.as_rule()),
             }
         }
-        None => Mod::EmptyMod,
+    }
+    TLAMod {
+        ident: ident,
+        items: items,
     }
 }
+
+// ===================
+// Other things (TODO sort)
+// ===================
 
 fn parse_ident(pair: Pair<Rule>) -> Ident {
     Ident::Ident {
