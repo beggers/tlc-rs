@@ -1,32 +1,52 @@
 // These are one-to-one with the non-silenced rules in grammar.pest.
+//
+// Enums seem best for the AST: structs are wasteful, since we often only
+// store one of many many options. Unions are tough because they don't give us
+// Debug and PartialEq for free. Enums give us both and they're easy to
+// pattern-match on.
+// Rust uses a mix of structs and enums. So as time goes on we may add structs.
+// https://github.com/rust-lang/rust/blob/dbce3b43b6cb34dd3ba12c3ec6f708fe68e9c3df/compiler/rustc_ast/src/ast.rs
+
+// ===================
+// Literals
+// ===================
 #[derive(Clone, Debug, PartialEq)]
-pub struct Ident {
-  pub value: String
+pub enum NumberLit {
+  IntLit{value: i64},
+  RealLit{value: f64},
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct StringLit {
-  pub value: String
+pub enum StringLit {
+  StringLit{value: String}
+}
+
+// ===================
+// Other things (TODO sort)
+// ===================
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Ident {
+  Ident{value: String}
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Expr {
-  pub string_lit: StringLit
+pub enum Expr {
+  StringLit{string_lit: StringLit},
+  NumberLit{number_lit: NumberLit}
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct OpDefn {
-  pub ident: Ident,
-  pub expr: Expr
+pub enum OpDefn {
+  SingleExprOpDefn{ident: Ident, expr: Expr}
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Mod {
-  pub ident: Ident,
-  pub op_defn: OpDefn
+pub enum Mod {
+  SingleOpDefnMod{ident: Ident, op_defn: OpDefn}
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct SourceFile {
-  pub mods: Vec<Mod>
+pub enum SourceFile {
+  SourceFile{mods: Vec<Mod>}
 }

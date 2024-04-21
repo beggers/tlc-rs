@@ -1,11 +1,26 @@
-WHITESPACE = _{ " " }
+// ===================
+// Silent parsed rules
+// ===================
+
+// TLA+ is sensitive enough to newlines that it feels like a bad idea
+// to add them here.
+WHITESPACE = _{ " " | "\t" }
 
 single_line = _{ "----" ~ "-"* }
 double_line = _{ "====" ~ "="* }
 def_eq = _{ "==" }
 mod_decl = _{ "MODULE" }
 
-ident = { ASCII_ALPHA ~ (ASCII_ALPHA | ASCII_DIGIT)* }
+// ===================
+// Literals
+// ===================
+
+nat_lit = @{ ASCII_DIGIT+ }
+real_lit = @{ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
+binary_lit = @{ "\\b" ~ ( "0" | "1" )+ }
+octal_lit = @{ "\\o" ~ ( '0'..'7' )+ }
+hex_lit = @{ "\\x" ~ ( ASCII_DIGIT | 'a'..'f' | 'A'..'F' )+ }
+number_lit = { nat_lit | real_lit | binary_lit | octal_lit | hex_lit }
 
 string_lit = ${ "\"" ~ inner ~ "\"" }
 inner = @{ char* }
@@ -15,17 +30,23 @@ char = {
     | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
 }
 
+// ===================
+// Other things (TODO sort)
+// ===================
+
+ident = @{ ASCII_ALPHA ~ (ASCII_ALPHA | ASCII_DIGIT)* }
+
 expr = {
   string_lit
 }
 
 op_defn = {
-  ident ~ def_eq ~ expr
+  ident ~ def_eq ~ expr ~ NEWLINE
 }
 
 mod = {
-  NEWLINE+ ~ single_line ~ mod_decl ~ ident ~ single_line ~ NEWLINE
-  ~ op_defn ~ NEWLINE
+  single_line ~ mod_decl ~ ident ~ single_line ~ NEWLINE
+  ~ op_defn
   ~ double_line ~ NEWLINE
 }
 
