@@ -27,9 +27,7 @@ function print_failed_tests {
 
 trap print_failed_tests EXIT
 
-run_test "cargo test -p lib --test modules single_module"
-run_test "cargo test -p lib --test modules nested_modules"
-run_test "cargo test -p lib --test modules multiple_nested_modules"
+run_test "cargo test -p lib --test modules"
 
 run_test "cargo test -p lib --test number"
 

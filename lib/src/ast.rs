@@ -43,14 +43,20 @@ pub enum SourceFile {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum TLAModItem {
-    OpDefnTLAModItem { op_defn: OpDefn },
-    TLAModModItem { tla_mod: TLAMod },
+    OpDefn { op_defn: OpDefn },
+    TLAMod { tla_mod: TLAMod },
+    ExtendsList { extends_list: ExtendsList },
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct TLAMod {
     pub ident: Ident,
     pub items: Vec<TLAModItem>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct ExtendsList {
+    pub idents: Vec<Ident>,
 }
 
 // ===================

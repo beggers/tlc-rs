@@ -8,8 +8,10 @@
 // Wherever there is possible collision with rust keywords, the prefix tla_
 // is used (e.g. modules).
 
-// TLA+ is sensitive enough to newlines that it feels like a bad idea
-// to add them here. Only tabs and spaces.
+// https://docs.rs/pest/latest/pest/#whitespace-and-comment
+// Things get weird when we add NEWLINE here -- pest thinks multiple newlines
+// are allowed in module declarations which breaks the
+// multiple_nested_modules test. Keep NEWLINE explicit.
 WHITESPACE = _{ " " | "\t" }
 
 single_line = _{ "----" ~ "-"* }
@@ -42,23 +44,31 @@ char = {
 }
 
 // ===================
+// Files and Modules
+// ===================
+
+source_file = { NEWLINE* ~ tla_mod+ ~ NEWLINE* }
+
+tla_mod = {
+  single_line ~ tla_mod_decl ~ ident ~ single_line ~ NEWLINE*
+  ~ (op_defn | tla_mod | extends_list)* ~ NEWLINE*
+  ~ double_line ~ NEWLINE*
+}
+
+extends_list = {
+  "EXTENDS" ~ ident ~ ("," ~ ident)* ~ NEWLINE*
+}
+
+// ===================
 // Other things (TODO sort)
 // ===================
 
 ident = @{ ASCII_ALPHA ~ (ASCII_ALPHA | ASCII_DIGIT)* }
 
 expr = {
-  string_lit | number_lit | number_set_lit
+  (string_lit | number_lit | number_set_lit) ~ NEWLINE*
 }
 
 op_defn = {
-  ident ~ def_eq ~ expr ~ NEWLINE
+  ident ~ def_eq ~ expr ~ NEWLINE*
 }
-
-tla_mod = {
-  NEWLINE* ~ single_line ~ tla_mod_decl ~ ident ~ single_line ~ NEWLINE
-  ~ (op_defn | tla_mod)*
-  ~ double_line ~ NEWLINE*
-}
-
-source_file = { tla_mod+ }

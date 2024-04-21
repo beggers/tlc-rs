@@ -1,5 +1,6 @@
 use crate::ast::{
   Expr,
+  ExtendsList,
   Ident,
   NumberLit,
   NumberSetLit,
@@ -108,13 +109,18 @@ fn parse_tla_mod(pair: Pair<Rule>) -> TLAMod {
         Some(inner_pair) => {
             match inner_pair.as_rule() {
                 Rule::op_defn => {
-                    items.push(TLAModItem::OpDefnTLAModItem {
+                    items.push(TLAModItem::OpDefn {
                         op_defn: parse_op_defn(inner_pair),
                     });
                 }
                 Rule::tla_mod => {
-                    items.push(TLAModItem::TLAModModItem {
+                    items.push(TLAModItem::TLAMod {
                         tla_mod: parse_tla_mod(inner_pair),
+                    });
+                }
+                Rule::extends_list => {
+                    items.push(TLAModItem::ExtendsList {
+                        extends_list: parse_extends_list(inner_pair),
                     });
                 }
                 _ => panic!("Unexpected rule in parse_tla_mod: {:?}", inner_pair.as_rule()),
@@ -125,6 +131,14 @@ fn parse_tla_mod(pair: Pair<Rule>) -> TLAMod {
         ident: ident,
         items: items,
     }
+}
+
+fn parse_extends_list(pair: Pair<Rule>) -> ExtendsList {
+    let mut idents = Vec::new();
+    for inner_pair in pair.into_inner() {
+        idents.push(parse_ident(inner_pair));
+    }
+    ExtendsList { idents: idents }
 }
 
 // ===================
