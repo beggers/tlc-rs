@@ -86,6 +86,7 @@ pub enum SourceFile {
 pub enum TLAModItem {
     OpDefn { op_defn: OpDefn },
     TLAMod { tla_mod: TLAMod },
+    ConstantList { constant_list: ConstantList },
     ExtendsList { extends_list: ExtendsList },
     VariableList { variable_list: VariableList },
 }
@@ -94,6 +95,11 @@ pub enum TLAModItem {
 pub struct TLAMod {
     pub ident: Ident,
     pub items: Vec<TLAModItem>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct ConstantList {
+    pub idents: Vec<Ident>,
 }
 
 #[derive(Clone, Debug, PartialEq)]

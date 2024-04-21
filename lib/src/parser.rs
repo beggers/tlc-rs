@@ -1,6 +1,6 @@
 use crate::ast::{
-    Expr, ExtendsList, Ident, IfThenElse, LiteralValue, NumberLit, NumberSetLit, OpDefn, SeqLit,
-    SourceFile, TLAMod, TLAModItem, VariableList,
+    ConstantList, Expr, ExtendsList, Ident, IfThenElse, LiteralValue, NumberLit, NumberSetLit,
+    OpDefn, SeqLit, SourceFile, TLAMod, TLAModItem, VariableList,
 };
 
 use pest::{iterators::Pair, Parser};
@@ -217,6 +217,11 @@ fn parse_tla_mod(pair: Pair<Rule>) -> TLAMod {
                     tla_mod: parse_tla_mod(inner_pair),
                 });
             }
+            Rule::constant_list => {
+                items.push(TLAModItem::ConstantList {
+                    constant_list: parse_constant_list(inner_pair),
+                });
+            }
             Rule::extends_list => {
                 items.push(TLAModItem::ExtendsList {
                     extends_list: parse_extends_list(inner_pair),
@@ -237,6 +242,14 @@ fn parse_tla_mod(pair: Pair<Rule>) -> TLAMod {
         ident: ident,
         items: items,
     }
+}
+
+fn parse_constant_list(pair: Pair<Rule>) -> ConstantList {
+    let mut idents = Vec::new();
+    for inner_pair in pair.into_inner() {
+        idents.push(parse_ident(inner_pair));
+    }
+    ConstantList { idents: idents }
 }
 
 fn parse_extends_list(pair: Pair<Rule>) -> ExtendsList {

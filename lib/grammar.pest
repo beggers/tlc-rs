@@ -16,8 +16,14 @@ WHITESPACE = _{ " " | "\t" }
 
 single_line = _{ "----" ~ "-"* }
 double_line = _{ "====" ~ "="* }
-def_eq = _{ "==" }
+
+def_eq = _{ "==" | "≜" }
+set_in = _{ "\\in" | "∈" }
+
+constant_list_decl = _{ "CONSTANTS" | "CONSTANT" }
+extends_decl = _{ "EXTENDS" }
 tla_mod_decl = _{ "MODULE" }
+variable_list_decl = _{ "VARIABLES" | "VARIABLE" }
 
 // ===================
 // Base values
@@ -88,7 +94,8 @@ source_file = { NEWLINE* ~ tla_mod+ ~ NEWLINE* }
 tla_mod = {
   single_line ~ tla_mod_decl ~ ident ~ single_line ~ NEWLINE*
   ~ (
-      extends_list
+      constant_list
+      | extends_list
       | variable_list
       | op_defn
       | tla_mod
@@ -96,10 +103,14 @@ tla_mod = {
   ~ double_line ~ NEWLINE*
 }
 
+constant_list = {
+  constant_list_decl ~ ident ~ ("," ~ ident ~ NEWLINE*)* ~ NEWLINE*
+}
+
 extends_list = {
-  "EXTENDS" ~ ident ~ ("," ~ ident)* ~ NEWLINE*
+  extends_decl ~ ident ~ ("," ~ ident)* ~ NEWLINE*
 }
 
 variable_list = {
-  ("VARIABLES" | "VARIABLE") ~ ident ~ ("," ~ ident ~ NEWLINE*)* ~ NEWLINE*
+  variable_list_decl ~ ident ~ ("," ~ ident ~ NEWLINE*)* ~ NEWLINE*
 }
