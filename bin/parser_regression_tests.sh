@@ -27,11 +27,14 @@ function print_failed_tests {
 
 trap print_failed_tests EXIT
 
-run_test "cargo test -p lib --test modules"
-run_test "cargo test -p lib --test number"
-run_test "cargo test -p lib --test string"
+run_test "cargo test -p lib --test exclude_sany_number"
 
 run_test "cargo test -p lib --test expressions -- --exact tuple_literal"
 run_test "cargo test -p lib --test expressions nested"
 
-run_test "cargo test -p lib --test exclude_sany_number"
+run_test "cargo test -p lib --test if_then_else ite_with_string"
+
+run_test "cargo test -p lib --test modules"
+run_test "cargo test -p lib --test number"
+run_test "cargo test -p lib --test string"
+

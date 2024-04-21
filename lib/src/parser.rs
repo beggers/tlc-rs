@@ -1,5 +1,5 @@
 use crate::ast::{
-    Expr, ExtendsList, Ident, LiteralValue, NumberLit, NumberSetLit, OpDefn, SeqLit, SourceFile,
+    Expr, ExtendsList, Ident, IfThenElse, LiteralValue, NumberLit, NumberSetLit, OpDefn, SeqLit, SourceFile,
     TLAMod, TLAModItem,
 };
 
@@ -130,6 +130,66 @@ fn parse_seq_lit(pair: Pair<Rule>) -> SeqLit {
 }
 
 // ===================
+// Expressions
+// ===================
+
+fn parse_expr(pair: Pair<Rule>) -> Expr {
+    let mut inner_pairs = pair.into_inner();
+    let inner_pair = inner_pairs.next().unwrap();
+    match inner_pair.as_rule() {
+        Rule::literal_value => {
+            let literal_value = parse_literal_value(inner_pair);
+            Expr::LiteralValue {
+                value: literal_value,
+            }
+        }
+        Rule::ident => {
+            let ident = parse_ident(inner_pair);
+            Expr::Ident {
+                value: ident
+            }
+        }
+        Rule::if_then_else => {
+            let if_then_else = parse_if_then_else(inner_pair);
+            Expr::IfThenElse {
+                value: Box::new(if_then_else),
+            }
+        }
+        Rule::expr => {
+            // Parens
+            return parse_expr(inner_pair);
+        }
+        Rule::seq_lit => {
+            let seq_lit = parse_seq_lit(inner_pair);
+            Expr::SeqLit { value: seq_lit }
+        }
+        _ => panic!("Unexpected rule in parse_expr: {:?}", inner_pair.as_rule()),
+    }
+}
+
+fn parse_if_then_else(pair: Pair<Rule>) -> IfThenElse {
+    let mut inner_pairs = pair.into_inner();
+    let cond = parse_expr(inner_pairs.next().unwrap());
+    let then_expr = parse_expr(inner_pairs.next().unwrap());
+    let else_expr = parse_expr(inner_pairs.next().unwrap());
+    IfThenElse::IfThenElse {
+        cond: Box::new(cond),
+        then_expr: Box::new(then_expr),
+        else_expr: Box::new(else_expr),
+    }
+}
+
+fn parse_op_defn(pair: Pair<Rule>) -> OpDefn {
+    let mut inner_pairs = pair.into_inner();
+    let ident = parse_ident(inner_pairs.next().unwrap());
+    let expr = parse_expr(inner_pairs.next().unwrap());
+    OpDefn::SingleExprOpDefn {
+        ident: ident,
+        expr: expr,
+    }
+}
+
+// ===================
 // Files and Modules
 // ===================
 
@@ -182,46 +242,4 @@ fn parse_extends_list(pair: Pair<Rule>) -> ExtendsList {
         idents.push(parse_ident(inner_pair));
     }
     ExtendsList { idents: idents }
-}
-
-// ===================
-// Other things (TODO sort)
-// ===================
-
-fn parse_op_defn(pair: Pair<Rule>) -> OpDefn {
-    let mut inner_pairs = pair.into_inner();
-    let ident = parse_ident(inner_pairs.next().unwrap());
-    let expr = parse_expr(inner_pairs.next().unwrap());
-    OpDefn::SingleExprOpDefn {
-        ident: ident,
-        expr: expr,
-    }
-}
-
-fn parse_expr(pair: Pair<Rule>) -> Expr {
-    let mut inner_pairs = pair.into_inner();
-    let inner_pair = inner_pairs.next().unwrap();
-    match inner_pair.as_rule() {
-        Rule::literal_value => {
-            let literal_value = parse_literal_value(inner_pair);
-            Expr::LiteralValue {
-                value: literal_value,
-            }
-        }
-        Rule::ident => {
-            let ident = parse_ident(inner_pair);
-            Expr::Ident {
-                value: ident
-            }
-        }
-        Rule::expr => {
-            // Parens
-            return parse_expr(inner_pair);
-        }
-        Rule::seq_lit => {
-            let seq_lit = parse_seq_lit(inner_pair);
-            Expr::SeqLit { value: seq_lit }
-        }
-        _ => panic!("Unexpected rule in parse_expr: {:?}", inner_pair.as_rule()),
-    }
 }

@@ -56,6 +56,30 @@ char = {
 seq_lit = { "<<" ~ expr ~ ("," ~ expr)* ~ ">>" }
 
 // ===================
+// Expressions
+// ===================
+
+expr = {
+  (
+    literal_value
+    | if_then_else
+    | seq_lit
+    | "(" ~ expr ~ ")"
+    | ident
+  ) ~ NEWLINE*
+}
+
+if_then_else = {
+  "IF" ~ NEWLINE* ~ expr ~ NEWLINE*
+  ~ "THEN" ~ NEWLINE* ~ expr ~ NEWLINE*
+  ~ "ELSE" ~ NEWLINE* ~ expr ~ NEWLINE*
+}
+
+op_defn = {
+  ident ~ def_eq ~ expr ~ NEWLINE*
+}
+
+// ===================
 // Files and Modules
 // ===================
 
@@ -63,22 +87,11 @@ source_file = { NEWLINE* ~ tla_mod+ ~ NEWLINE* }
 
 tla_mod = {
   single_line ~ tla_mod_decl ~ ident ~ single_line ~ NEWLINE*
-  ~ (op_defn | tla_mod | extends_list)* ~ NEWLINE*
+  ~ (extends_list)? ~ NEWLINE*
+  ~ (op_defn | tla_mod)* ~ NEWLINE*
   ~ double_line ~ NEWLINE*
 }
 
 extends_list = {
   "EXTENDS" ~ ident ~ ("," ~ ident)* ~ NEWLINE*
-}
-
-// ===================
-// Other things (TODO sort)
-// ===================
-
-expr = {
-  (literal_value | ident | seq_lit | "(" ~ expr ~ ")") ~ NEWLINE*
-}
-
-op_defn = {
-  ident ~ def_eq ~ expr ~ NEWLINE*
 }

@@ -6,8 +6,6 @@
 // pattern-match on.
 // Rust uses a mix of structs and enums. So as time goes on we may add structs.
 // https://github.com/rust-lang/rust/blob/dbce3b43b6cb34dd3ba12c3ec6f708fe68e9c3df/compiler/rustc_ast/src/ast.rs
-//
-// TODO should we use Boxes? Feels like we should use Boxes.
 
 // ===================
 // Base values
@@ -48,6 +46,28 @@ pub enum SeqLit {
 }
 
 // ===================
+// Expressions
+// ===================
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Expr {
+    LiteralValue { value: LiteralValue },
+    Ident { value: Ident },
+    SeqLit { value: SeqLit },
+    IfThenElse { value: Box<IfThenElse> },
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum IfThenElse {
+    IfThenElse { cond: Box<Expr>, then_expr: Box<Expr>, else_expr: Box<Expr> },
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum OpDefn {
+    SingleExprOpDefn { ident: Ident, expr: Expr },
+}
+
+// ===================
 // Files and Modules
 // ===================
 
@@ -74,20 +94,4 @@ pub struct TLAMod {
 #[derive(Clone, Debug, PartialEq)]
 pub struct ExtendsList {
     pub idents: Vec<Ident>,
-}
-
-// ===================
-// Other things (TODO sort)
-// ===================
-
-#[derive(Clone, Debug, PartialEq)]
-pub enum Expr {
-    LiteralValue { value: LiteralValue },
-    Ident { value: Ident },
-    SeqLit { value: SeqLit },
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub enum OpDefn {
-    SingleExprOpDefn { ident: Ident, expr: Expr },
 }
