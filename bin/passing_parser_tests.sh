@@ -4,6 +4,8 @@
 #
 # When all test cases for a file pass, collapse them into one line!
 
+cargo test -p lib --test modules single
+
 cargo test -p lib --test number
 
 cargo test -p lib --test string basic_string

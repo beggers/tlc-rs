@@ -100,10 +100,16 @@ fn parse_source_file(pair: Pair<Rule>) -> SourceFile {
 fn parse_mod(pair: Pair<Rule>) -> Mod {
     let mut inner_pairs = pair.into_inner();
     let ident = parse_ident(inner_pairs.next().unwrap());
-    let op_defn = parse_op_defn(inner_pairs.next().unwrap());
-    Mod::SingleOpDefnMod {
-        ident: ident,
-        op_defn: op_defn,
+    let contents = inner_pairs.next();
+    match contents {
+        Some(pair) => {
+            let op_defn = parse_op_defn(pair);
+            Mod::SingleOpDefnMod {
+                ident: ident,
+                op_defn: op_defn,
+            }
+        }
+        None => Mod::EmptyMod,
     }
 }
 

@@ -1,9 +1,12 @@
 // ===================
 // Silent parsed rules
 // ===================
+//
+// These are rules which need to be parsed for file correctness but don't need
+// to be tokenized or otherwise used in the AST.
 
 // TLA+ is sensitive enough to newlines that it feels like a bad idea
-// to add them here.
+// to add them here. Only tabs and spaces.
 WHITESPACE = _{ " " | "\t" }
 
 single_line = _{ "----" ~ "-"* }
@@ -51,7 +54,7 @@ op_defn = {
 
 mod = {
   NEWLINE* ~ single_line ~ mod_decl ~ ident ~ single_line ~ NEWLINE
-  ~ op_defn+
+  ~ op_defn*
   ~ double_line ~ NEWLINE*
 }
 

@@ -6,6 +6,8 @@
 // pattern-match on.
 // Rust uses a mix of structs and enums. So as time goes on we may add structs.
 // https://github.com/rust-lang/rust/blob/dbce3b43b6cb34dd3ba12c3ec6f708fe68e9c3df/compiler/rustc_ast/src/ast.rs
+//
+// TODO should we use Boxes? Feels like we should use Boxes.
 
 // ===================
 // Literals
@@ -51,6 +53,7 @@ pub enum OpDefn {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Mod {
+    EmptyMod,
     SingleOpDefnMod { ident: Ident, op_defn: OpDefn },
 }
 
