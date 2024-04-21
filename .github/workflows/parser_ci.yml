@@ -14,4 +14,4 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@v1
       - name: Run tests
         run: |
-          bin/passing_parser_tests.sh
+          bin/parser_regression_tests.sh
