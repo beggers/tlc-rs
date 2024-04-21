@@ -83,6 +83,7 @@ pub enum TLAModItem {
     OpDefn { op_defn: OpDefn },
     TLAMod { tla_mod: TLAMod },
     ExtendsList { extends_list: ExtendsList },
+    VariableList { variable_list: VariableList },
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -93,5 +94,10 @@ pub struct TLAMod {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct ExtendsList {
+    pub idents: Vec<Ident>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct VariableList {
     pub idents: Vec<Ident>,
 }

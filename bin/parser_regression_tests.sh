@@ -38,3 +38,4 @@ run_test "cargo test -p lib --test modules"
 run_test "cargo test -p lib --test number"
 run_test "cargo test -p lib --test string"
 
+run_test "cargo test -p lib --test unit variable_declaration"
