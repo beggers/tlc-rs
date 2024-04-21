@@ -12,13 +12,13 @@
 // ===================
 #[derive(Clone, Debug, PartialEq)]
 pub enum NumberLit {
-  IntLit{value: i64},
-  RealLit{value: f64},
+    IntLit { value: i64 },
+    RealLit { value: f64 },
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum StringLit {
-  StringLit{value: String}
+    StringLit { value: String },
 }
 
 // ===================
@@ -27,26 +27,26 @@ pub enum StringLit {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Ident {
-  Ident{value: String}
+    Ident { value: String },
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Expr {
-  StringLit{string_lit: StringLit},
-  NumberLit{number_lit: NumberLit}
+    StringLit { string_lit: StringLit },
+    NumberLit { number_lit: NumberLit },
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum OpDefn {
-  SingleExprOpDefn{ident: Ident, expr: Expr}
+    SingleExprOpDefn { ident: Ident, expr: Expr },
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Mod {
-  SingleOpDefnMod{ident: Ident, op_defn: OpDefn}
+    SingleOpDefnMod { ident: Ident, op_defn: OpDefn },
 }
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum SourceFile {
-  SourceFile{mods: Vec<Mod>}
+    SourceFile { mods: Vec<Mod> },
 }

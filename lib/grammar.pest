@@ -16,10 +16,10 @@ mod_decl = _{ "MODULE" }
 // ===================
 
 nat_lit = @{ ASCII_DIGIT+ }
-real_lit = @{ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
 binary_lit = @{ "\\b" ~ ( "0" | "1" )+ }
 octal_lit = @{ "\\o" ~ ( '0'..'7' )+ }
 hex_lit = @{ "\\x" ~ ( ASCII_DIGIT | 'a'..'f' | 'A'..'F' )+ }
+real_lit = @{ ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT+ }
 number_lit = { nat_lit | real_lit | binary_lit | octal_lit | hex_lit }
 
 string_lit = ${ "\"" ~ inner ~ "\"" }
@@ -37,7 +37,7 @@ char = {
 ident = @{ ASCII_ALPHA ~ (ASCII_ALPHA | ASCII_DIGIT)* }
 
 expr = {
-  string_lit
+  string_lit | number_lit
 }
 
 op_defn = {
@@ -46,7 +46,7 @@ op_defn = {
 
 mod = {
   NEWLINE* ~ single_line ~ mod_decl ~ ident ~ single_line ~ NEWLINE
-  ~ op_defn
+  ~ op_defn+
   ~ double_line ~ NEWLINE*
 }
 

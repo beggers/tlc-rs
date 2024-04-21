@@ -19,14 +19,24 @@ In short: we need to tell Pest how to parse TLA+, we need a nice strongly typed 
 
 ## Testing
 
+To run all tests which should be passing:
+
 ```sh
-# Run all tests for application and library
-cargo test --all --no-fail-fast
+bin/passing_parser_tests.sh  # Please add to this file when you get a test passing!
 ```
+
+To run a single test:
 
 ```sh
 # Run only a single file
 cargo test -p lib --test string  # Replace "string" with the file you want
+```
+
+To run all tests:
+
+```sh
+# Run all tests for application and library
+cargo test --all --no-fail-fast
 ```
 
 ## Requirements

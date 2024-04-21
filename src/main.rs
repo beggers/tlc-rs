@@ -1,3 +1,3 @@
 fn main() {
-  lib::parse_test_file();
+    lib::parse_test_file();
 }
