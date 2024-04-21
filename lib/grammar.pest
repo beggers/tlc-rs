@@ -47,7 +47,7 @@ variable_list_decl = _{ "VARIABLES" | "VARIABLE" }
 // Base values
 // ===================
 
-ident = @{ ASCII_ALPHA ~ (ASCII_ALPHA | ASCII_DIGIT)* }
+ident = @{ ASCII_DIGIT* ~ ASCII_ALPHA+ ~ (ASCII_ALPHA | ASCII_DIGIT)* }
 
 literal_value = { number_lit | string_lit | number_set_lit | string_set_lit }
 
