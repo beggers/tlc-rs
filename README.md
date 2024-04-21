@@ -39,21 +39,11 @@ To run all tests:
 cargo test --all --no-fail-fast
 ```
 
-## Requirements
+## Project goals
 
-- Progress indicators like the TLA+ Toolkit (diameter, states found, percentage of states checked, yadda yadda)
-- 
+Goals of the project in roughly descending order of importance:
 
-## Parts
-
-- Lexer (with unicode support?)
-- Parser
-- Model checker? How does that even work?
-
-## Testing
-
-- https://github.com/ongardie/raft.tla/blob/master/raft.tla
-
-## Magic
-
-- Debugger
+- Cover 80+% of common real-world use-cases.
+- Trivially easy to install and run.
+- Really really really good error reporting.
+- Speed.
