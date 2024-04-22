@@ -110,7 +110,7 @@ expr = !{
     // TODO switch to a Pratt parser so order doesn't matter here. It's going
     // to get real brittle real quick.
     if_then_else
-    | box
+    | always
     | stutter
     | implication
     | infix_conjunct
@@ -154,7 +154,7 @@ infix_conjunct = {
   ident ~ bullet_conj ~ expr
 }
 
-box = {
+always = {
   case_box ~ expr
 }
 
@@ -179,8 +179,7 @@ op_defn = {
 // Theorems and proofs
 // ===================
 
-// Ignore theorems (make them silent rules) for now.
-theorem = _{
+theorem = {
   theorem_decl ~ expr
 }
 

@@ -37,7 +37,7 @@ run_test "cargo test -p lib --test expressions nested"
 run_test "cargo test -p lib --test if_then_else ite_with_string"
 
 run_test "cargo test -p lib --test modules"
-run_test "cargo test -p lib --test number"
+run_test "cargo test -p lib --test number all_number_sets"
 run_test "cargo test -p lib --test string"
 
 run_test "cargo test -p lib --test unit variable_declaration"

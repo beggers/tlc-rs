@@ -17,10 +17,11 @@ pub enum Ident {
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum LiteralValue {
-    StringLit { value: String },
     NumberLit { value: NumberLit },
     NumberSetLit { value: NumberSetLit },
+    IntRangeLit { start: i64, end: i64 },
     StringSetLit,
+    StringLit { value: String },
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -55,6 +56,14 @@ pub enum Expr {
     Ident { value: Ident },
     SeqLit { value: SeqLit },
     IfThenElse { value: Box<IfThenElse> },
+    SetMembership { value: Box<SetMembership> },
+    Equals { value: Box<Equals> },
+    NotEquals { value: Box<NotEquals> },
+    Plus { value: Box<Plus> },
+    InfixConjunct { value: Box<InfixConjunct> },
+    Always { value: Box<Always> },
+    Stutter { value: Box<Stutter> },
+    Implication { value: Box<Implication> },
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -69,6 +78,47 @@ pub enum IfThenElse {
 #[derive(Clone, Debug, PartialEq)]
 pub enum OpDefn {
     SingleExprOpDefn { ident: Ident, expr: Expr },
+}
+
+// TODO unify these into a single InfixOperator enum.
+#[derive(Clone, Debug, PartialEq)]
+pub enum SetMembership {
+    SetMembership { ident: Ident, set_expr: Expr },
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Equals {
+    Equals { left: Ident, right: Expr },
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum NotEquals {
+    NotEquals { left: Ident, right: Expr },
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Plus {
+    Plus { left: Ident, right: Expr },
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum InfixConjunct {
+    InfixConjunct { left: Ident, right: Expr },
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Always {
+    Always { expr: Expr },
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Stutter {
+    Stutter { expr: Expr },
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum Implication {
+    Implication { left: Ident, right: Expr },
 }
 
 // ===================

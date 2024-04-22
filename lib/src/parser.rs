@@ -1,6 +1,7 @@
 use crate::ast::{
-    ConstantList, Expr, ExtendsList, Ident, IfThenElse, LiteralValue, NumberLit, NumberSetLit,
-    OpDefn, SeqLit, SourceFile, TLAMod, TLAModItem, VariableList,
+    Always, ConstantList, Equals, Expr, ExtendsList, Ident, IfThenElse, Implication, InfixConjunct,
+    LiteralValue, NotEquals, NumberLit, NumberSetLit, OpDefn, Plus, SeqLit, SetMembership,
+    SourceFile, Stutter, TLAMod, TLAModItem, VariableList,
 };
 
 use pest::{iterators::Pair, Parser};
@@ -47,10 +48,6 @@ fn parse_ident(pair: Pair<Rule>) -> Ident {
 fn parse_literal_value(pair: Pair<Rule>) -> LiteralValue {
     let inner_pair = pair.into_inner().next().unwrap();
     match inner_pair.as_rule() {
-        Rule::string_lit => {
-            let string_lit = parse_string_lit(inner_pair);
-            LiteralValue::StringLit { value: string_lit }
-        }
         Rule::number_lit => {
             let number_lit = parse_number_lit(inner_pair);
             LiteralValue::NumberLit { value: number_lit }
@@ -61,7 +58,25 @@ fn parse_literal_value(pair: Pair<Rule>) -> LiteralValue {
                 value: number_set_lit,
             }
         }
+        Rule::int_range_lit => {
+            let mut inner_pairs = inner_pair.into_inner();
+            let start = parse_number_lit(inner_pairs.next().unwrap());
+            let end = parse_number_lit(inner_pairs.next().unwrap());
+            match (start, end) {
+                (NumberLit::IntLit { value: start }, NumberLit::IntLit { value: end }) => {
+                    LiteralValue::IntRangeLit {
+                        start: start,
+                        end: end,
+                    }
+                }
+                _ => panic!("IntRangeLit must have two IntLit values"),
+            }
+        }
         Rule::string_set_lit => LiteralValue::StringSetLit,
+        Rule::string_lit => {
+            let string_lit = parse_string_lit(inner_pair);
+            LiteralValue::StringLit { value: string_lit }
+        }
         _ => panic!(
             "Unexpected rule in parse_literal_value: {:?}",
             inner_pair.as_rule()
@@ -161,6 +176,54 @@ fn parse_expr(pair: Pair<Rule>) -> Expr {
             let seq_lit = parse_seq_lit(inner_pair);
             Expr::SeqLit { value: seq_lit }
         }
+        Rule::set_membership => {
+            let set_membership = parse_set_membership(inner_pair);
+            Expr::SetMembership {
+                value: Box::new(set_membership),
+            }
+        }
+        Rule::equals => {
+            let equals = parse_equals(inner_pair);
+            Expr::Equals {
+                value: Box::new(equals),
+            }
+        }
+        Rule::not_equals => {
+            let not_equals = parse_not_equals(inner_pair);
+            Expr::NotEquals {
+                value: Box::new(not_equals),
+            }
+        }
+        Rule::plus => {
+            let plus = parse_plus(inner_pair);
+            Expr::Plus {
+                value: Box::new(plus),
+            }
+        }
+        Rule::infix_conjunct => {
+            let infix_conjunct = parse_infix_conjunct(inner_pair);
+            Expr::InfixConjunct {
+                value: Box::new(infix_conjunct),
+            }
+        }
+        Rule::always => {
+            let box_op = parse_always(inner_pair);
+            Expr::Always {
+                value: Box::new(box_op),
+            }
+        }
+        Rule::stutter => {
+            let stutter = parse_stutter(inner_pair);
+            Expr::Stutter {
+                value: Box::new(stutter),
+            }
+        }
+        Rule::implication => {
+            let implication = parse_implication(inner_pair);
+            Expr::Implication {
+                value: Box::new(implication),
+            }
+        }
         _ => panic!("Unexpected rule in parse_expr: {:?}", inner_pair.as_rule()),
     }
 }
@@ -174,6 +237,76 @@ fn parse_if_then_else(pair: Pair<Rule>) -> IfThenElse {
         cond: Box::new(cond),
         then_expr: Box::new(then_expr),
         else_expr: Box::new(else_expr),
+    }
+}
+
+fn parse_set_membership(pair: Pair<Rule>) -> SetMembership {
+    let mut inner_pairs = pair.into_inner();
+    let ident = parse_ident(inner_pairs.next().unwrap());
+    let set_expr = parse_expr(inner_pairs.next().unwrap());
+    SetMembership::SetMembership {
+        ident: ident,
+        set_expr: set_expr,
+    }
+}
+
+fn parse_equals(pair: Pair<Rule>) -> Equals {
+    let mut inner_pairs = pair.into_inner();
+    let left = parse_ident(inner_pairs.next().unwrap());
+    let right = parse_expr(inner_pairs.next().unwrap());
+    Equals::Equals {
+        left: left,
+        right: right,
+    }
+}
+
+fn parse_not_equals(pair: Pair<Rule>) -> NotEquals {
+    let mut inner_pairs = pair.into_inner();
+    let left = parse_ident(inner_pairs.next().unwrap());
+    let right = parse_expr(inner_pairs.next().unwrap());
+    NotEquals::NotEquals {
+        left: left,
+        right: right,
+    }
+}
+
+fn parse_plus(pair: Pair<Rule>) -> Plus {
+    let mut inner_pairs = pair.into_inner();
+    let left = parse_ident(inner_pairs.next().unwrap());
+    let right = parse_expr(inner_pairs.next().unwrap());
+    Plus::Plus {
+        left: left,
+        right: right,
+    }
+}
+
+fn parse_infix_conjunct(pair: Pair<Rule>) -> InfixConjunct {
+    let mut inner_pairs = pair.into_inner();
+    let left = parse_ident(inner_pairs.next().unwrap());
+    let right = parse_expr(inner_pairs.next().unwrap());
+    InfixConjunct::InfixConjunct {
+        left: left,
+        right: right,
+    }
+}
+
+fn parse_always(pair: Pair<Rule>) -> Always {
+    let expr = parse_expr(pair.into_inner().next().unwrap());
+    Always::Always { expr: expr }
+}
+
+fn parse_stutter(pair: Pair<Rule>) -> Stutter {
+    let expr = parse_expr(pair.into_inner().next().unwrap());
+    Stutter::Stutter { expr: expr }
+}
+
+fn parse_implication(pair: Pair<Rule>) -> Implication {
+    let mut inner_pairs = pair.into_inner();
+    let left = parse_ident(inner_pairs.next().unwrap());
+    let right = parse_expr(inner_pairs.next().unwrap());
+    Implication::Implication {
+        left: left,
+        right: right,
     }
 }
 
@@ -203,10 +336,9 @@ fn parse_tla_mod(pair: Pair<Rule>) -> TLAMod {
     let mut inner_pairs = pair.into_inner();
     let ident = parse_ident(inner_pairs.next().unwrap());
     let mut items = Vec::new();
-    let inner_pair = inner_pairs.next();
-    match inner_pair {
-        None => {}
-        Some(inner_pair) => match inner_pair.as_rule() {
+    // Iterate over everything in the module
+    for inner_pair in inner_pairs {
+        match inner_pair.as_rule() {
             Rule::op_defn => {
                 items.push(TLAModItem::OpDefn {
                     op_defn: parse_op_defn(inner_pair),
@@ -232,11 +364,15 @@ fn parse_tla_mod(pair: Pair<Rule>) -> TLAMod {
                     variable_list: parse_variable_list(inner_pair),
                 });
             }
+            Rule::theorem => {
+                // Nothing
+            }
             _ => panic!(
-                "Unexpected rule in parse_tla_mod: {:?}",
-                inner_pair.as_rule()
+                "Unexpected rule in parse_tla_mod: {:?}. {:?}",
+                inner_pair.as_rule(),
+                inner_pair.as_str()
             ),
-        },
+        }
     }
     TLAMod {
         ident: ident,
