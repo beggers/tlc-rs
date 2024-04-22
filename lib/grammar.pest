@@ -1,24 +1,38 @@
-// ===================
-// Silent parsed rules
-// ===================
-//
-// These are rules which need to be parsed for file correctness and understanding
-// but don't need to be tokenized or otherwise used in the AST.
-//
-// Wherever there is possible collision with rust keywords, the prefix tla_
-// is used (e.g. modules).
+// Grammar for TLA+ in Pest.
+// See https://pest.rs/book/ and https://docs.rs/pest/latest/pest/
 
-// https://docs.rs/pest/latest/pest/#whitespace-and-comment
 // Things get weird when we add NEWLINE here -- pest thinks multiple newlines
 // are allowed in module declarations which breaks the
 // multiple_nested_modules test. Keep NEWLINE explicit.
+// https://docs.rs/pest/latest/pest/#whitespace-and-comment
 WHITESPACE = _{ " " | "\t" }
+
+// ===================
+// Organization
+// ===================
 
 single_line = _{ "----" ~ "-"* }
 double_line = _{ "====" ~ "="* }
 
+// ===================
+// Declarations
+// ===================
+
+tla_mod_decl = _{ "MODULE" }
+constant_list_decl = _{ "CONSTANTS" | "CONSTANT" }
+extends_decl = _{ "EXTENDS" }
+variable_list_decl = _{ "VARIABLES" | "VARIABLE" }
+
+theorem_decl = _{ "THEOREM" }
+
+// ===================
+// Built-in operators
+// ===================
+
+// TODO organize these better
 neq = _{ "#" }
 eq = _{ "=" }
+implies = _{ "=>" | "⇒" }
 def_eq = _{ "==" | "≜" }
 set_in = _{ "\\in" | "∈" }
 gets = _{ "<-" | "⟵" | "←" }
@@ -36,14 +50,8 @@ case_arrow = _{ "->" | "⟶" | "→" }
 colon = _{ ":" }
 address = _{ "@" }
 label_as = _{ "::" | "∷" }
-placeholder = { "_" }
 bullet_conj = _{ "/\\" | "∧" }
 bullet_disj = _{ "\\/" | "∨" }
-
-constant_list_decl = _{ "CONSTANTS" | "CONSTANT" }
-extends_decl = _{ "EXTENDS" }
-tla_mod_decl = _{ "MODULE" }
-variable_list_decl = _{ "VARIABLES" | "VARIABLE" }
 
 // ===================
 // Base values
@@ -97,9 +105,15 @@ finite_set_lit = { "{" ~ expr ~ ("," ~ expr)* ~ "}" }
 // Expressions
 // ===================
 
-expr = {
+expr = !{
   (
+    // TODO switch to a Pratt parser so order doesn't matter here. It's going
+    // to get real brittle real quick.
     if_then_else
+    | box
+    | stutter
+    | implication
+    | infix_conjunct
     | equals
     | not_equals
     | plus
@@ -117,6 +131,9 @@ if_then_else = {
   ~ "ELSE" ~ NEWLINE* ~ expr ~ NEWLINE*
 }
 
+// TODO these all need `expr` on the left side. This requires switching to a
+// Pratt parser since a CFG parser can't handle left recursion.
+
 set_membership = {
   ident ~ set_in ~ expr
 }
@@ -133,13 +150,38 @@ plus = {
   ident ~ "+" ~ expr
 }
 
+infix_conjunct = {
+  ident ~ bullet_conj ~ expr
+}
+
+box = {
+  case_box ~ expr
+}
+
+stutter = {
+  "[" ~ expr ~ "]" ~ "_" ~ ident
+}
+
+implication = {
+  ident ~ implies ~ expr
+}
+
 // ===================
-// Operators
+// User-defined operators
 // ===================
 
 op_defn = {
   // TODO parameters
   ident ~ def_eq ~ expr ~ NEWLINE*
+}
+
+// ===================
+// Theorems and proofs
+// ===================
+
+// Ignore theorems (make them silent rules) for now.
+theorem = _{
+  theorem_decl ~ expr
 }
 
 // ===================
@@ -155,6 +197,7 @@ tla_mod = {
       | extends_list
       | variable_list
       | op_defn
+      | theorem
       | tla_mod
       | single_line
     )* ~ NEWLINE*
