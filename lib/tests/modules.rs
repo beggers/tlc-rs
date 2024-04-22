@@ -9,6 +9,11 @@ fn single_module() {
 }
 
 #[test]
+fn single_module_with_lines() {
+    read_and_parse::test("testdata/modules.tla", "Single module with lines");
+}
+
+#[test]
 fn module_with_extends() {
     read_and_parse::test("testdata/modules.tla", "Module with EXTENDS");
 }

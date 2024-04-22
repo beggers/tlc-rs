@@ -12,6 +12,20 @@ Single module
 )
 
 =============|||
+Single module with lines
+=============|||
+
+---- MODULE Test ----
+---------------------
+====
+
+-------------|||
+
+(source_file
+  (module (header_line) (identifier) (header_line) (double_line))
+)
+
+=============|||
 Module with EXTENDS
 =============|||
 
