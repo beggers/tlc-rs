@@ -3,6 +3,8 @@
 # where the gaps are.
 #
 # When all test cases for a file pass, collapse them into one line!
+
+
 FAILED_TESTS=()
 
 function run_test {

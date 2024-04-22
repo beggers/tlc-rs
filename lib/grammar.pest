@@ -17,6 +17,8 @@ WHITESPACE = _{ " " | "\t" }
 single_line = _{ "----" ~ "-"* }
 double_line = _{ "====" ~ "="* }
 
+neq = _{ "#" }
+eq = _{ "=" }
 def_eq = _{ "==" | "≜" }
 set_in = _{ "\\in" | "∈" }
 gets = _{ "<-" | "⟵" | "←" }
@@ -47,10 +49,11 @@ variable_list_decl = _{ "VARIABLES" | "VARIABLE" }
 // Base values
 // ===================
 
-ident = @{ ASCII_DIGIT* ~ ASCII_ALPHA+ ~ (ASCII_ALPHA | ASCII_DIGIT)* }
+ident = @{ ASCII_DIGIT* ~ ASCII_ALPHA+ ~ (ASCII_ALPHA | ASCII_DIGIT)* ~ "'"? }
 
 literal_value = {
-  number_lit
+  int_range_lit
+  | number_lit
   | string_lit
   | number_set_lit
   | string_set_lit
@@ -65,6 +68,8 @@ octal_lit = @{ ^"\\o" ~ ( '0'..'7' )+ }
 hex_lit = @{ ^"\\h" ~ ( ASCII_DIGIT | 'a'..'f' | 'A'..'F' )+ }
 real_lit = @{ ASCII_DIGIT* ~ "." ~ ASCII_DIGIT+ }
 number_lit = { real_lit | nat_lit | binary_lit | octal_lit | hex_lit }
+
+int_range_lit = { number_lit ~ ".." ~ number_lit }
 
 nat_numbers_lit = { "Nat" }
 int_numbers_lit = { "Int" }
@@ -94,11 +99,15 @@ finite_set_lit = { "{" ~ expr ~ ("," ~ expr)* ~ "}" }
 
 expr = {
   (
-    literal_value
-    | if_then_else
+    if_then_else
+    | equals
+    | not_equals
+    | plus
+    | set_membership
     | seq_lit
     | "(" ~ expr ~ ")"
     | ident
+    | literal_value
   ) ~ NEWLINE*
 }
 
@@ -108,7 +117,28 @@ if_then_else = {
   ~ "ELSE" ~ NEWLINE* ~ expr ~ NEWLINE*
 }
 
+set_membership = {
+  ident ~ set_in ~ expr
+}
+
+equals = {
+  ident ~ eq ~ expr
+}
+
+not_equals = {
+  ident ~ neq ~ expr
+}
+
+plus = {
+  ident ~ "+" ~ expr
+}
+
+// ===================
+// Operators
+// ===================
+
 op_defn = {
+  // TODO parameters
   ident ~ def_eq ~ expr ~ NEWLINE*
 }
 
@@ -126,6 +156,7 @@ tla_mod = {
       | variable_list
       | op_defn
       | tla_mod
+      | single_line
     )* ~ NEWLINE*
   ~ double_line ~ NEWLINE*
 }

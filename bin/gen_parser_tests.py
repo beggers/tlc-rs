@@ -34,7 +34,6 @@ fn {rust_test_function_name}() {{
 # ==================|||
 # Test Name
 # ==================|||
-# TODO this misses some cases in let_in and regression
 TLA_TEST_REGEX = r"===+\|\|\|\s*(.+)\s*===+\|\|\|"
 
 
