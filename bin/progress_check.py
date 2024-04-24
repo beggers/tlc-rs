@@ -41,7 +41,7 @@ def main():
         passed += int(match.group(1))
         failed += int(match.group(2))
 
-    print(f"Tests passed: {passed}/{passed + failed}")
+    print(f"Tests failed: {failed}/{passed + failed}")
 
 
 if __name__ == "__main__":

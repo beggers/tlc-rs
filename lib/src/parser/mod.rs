@@ -4,16 +4,11 @@ use crate::ast::{
     SetMembership, SourceFile, Stutter, TLAMod, TLAModItem, VariableList,
 };
 
+mod base;
+
+use crate::parser::base::{Rule, TLAParser};
 use pest::{iterators::Pair, Parser};
-use pest_derive::Parser;
 use std::fs;
-
-#[derive(Parser)]
-#[grammar = "grammar.pest"]
-struct TLAParser;
-
-// Force recompile when the grammar changes.
-const _GRAMMAR: &str = include_str!("../grammar.pest");
 
 pub fn parse_file(filename: &str) -> Result<Ast, pest::error::Error<Rule>> {
     let contents = fs::read_to_string(filename).expect("Something went wrong reading the file");
