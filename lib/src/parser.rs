@@ -1,7 +1,7 @@
 use crate::ast::{
-    Always, ConstantList, Equals, Expr, ExtendsList, Ident, IfThenElse, Implication, InfixConjunct,
-    LiteralValue, NotEquals, NumberLit, NumberSetLit, OpDefn, Plus, SeqLit, SetMembership,
-    SourceFile, Stutter, TLAMod, TLAModItem, VariableList,
+    Always, Ast, ConstantList, Equals, Expr, ExtendsList, Ident, IfThenElse, Implication,
+    InfixConjunct, LiteralValue, NotEquals, NumberLit, NumberSetLit, OpDefn, Plus, SeqLit,
+    SetMembership, SourceFile, Stutter, TLAMod, TLAModItem, VariableList,
 };
 
 use pest::{iterators::Pair, Parser};
@@ -15,21 +15,23 @@ struct TLAParser;
 // Force recompile when the grammar changes.
 const _GRAMMAR: &str = include_str!("../grammar.pest");
 
-pub fn parse_file(filename: &str) -> Result<SourceFile, pest::error::Error<Rule>> {
+pub fn parse_file(filename: &str) -> Result<Ast, pest::error::Error<Rule>> {
     let contents = fs::read_to_string(filename).expect("Something went wrong reading the file");
     parse_string(&contents)
 }
 
 // Public for testing.
-pub fn parse_string(input: &str) -> Result<SourceFile, pest::error::Error<Rule>> {
+pub fn parse_string(input: &str) -> Result<Ast, pest::error::Error<Rule>> {
     let parsed = TLAParser::parse(Rule::source_file, input)
         .unwrap()
         .next()
         .unwrap();
     // TODO this correctly grabs the first source file, but it should fail
     // if there's extra crap afterwards.
-    let ast = parse_source_file(parsed);
-    Ok(ast)
+    let sf = parse_source_file(parsed);
+    Ok(Ast {
+        source_files: vec![sf],
+    })
 }
 
 // These functions follow the same ordering as the rules in grammar.pest.

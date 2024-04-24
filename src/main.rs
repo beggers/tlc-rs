@@ -1,5 +1,6 @@
 use clap::Parser;
 
+use lib::analyzer::Analyzer;
 use lib::parser::parse_file;
 
 #[derive(Parser, Debug)]
@@ -11,5 +12,6 @@ fn main() {
     let args = Args::parse();
     let file = args.file;
     let ast = parse_file(&file).unwrap();
-    println!("{:?}", ast);
+    let analyzer = Analyzer::new(ast);
+    analyzer.analyze();
 }

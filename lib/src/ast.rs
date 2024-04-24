@@ -7,6 +7,11 @@
 // Rust uses a mix of structs and enums. So as time goes on we may add structs.
 // https://github.com/rust-lang/rust/blob/dbce3b43b6cb34dd3ba12c3ec6f708fe68e9c3df/compiler/rustc_ast/src/ast.rs
 
+#[derive(Clone, Debug, PartialEq)]
+pub struct Ast {
+    pub source_files: Vec<SourceFile>,
+}
+
 // ===================
 // Base values
 // ===================
