@@ -11,6 +11,7 @@ path = "src/lib.rs"
 [dependencies]
 "pest" = "2.7.9"
 "pest_derive" = "2.7.9"
+thiserror = "1.0.59"
 
 [dev-dependencies]
 "regex" = "1.10.4"

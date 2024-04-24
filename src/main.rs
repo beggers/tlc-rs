@@ -1,7 +1,7 @@
 use clap::Parser;
 
-use lib::analyzer::Analyzer;
 use lib::parser::parse_file;
+use lib::static_analysis::Analyzer;
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -13,5 +13,5 @@ fn main() {
     let file = args.file;
     let ast = parse_file(&file).unwrap();
     let analyzer = Analyzer::new(ast);
-    analyzer.analyze();
+    let _ = analyzer.analyze();
 }
