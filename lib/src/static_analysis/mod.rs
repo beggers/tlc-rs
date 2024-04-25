@@ -1,4 +1,5 @@
-use crate::ast;
+use crate::ast::Ast;
+use crate::model::Model;
 
 use thiserror::Error;
 
@@ -11,17 +12,17 @@ pub enum AnalyzerError {
 }
 
 #[derive(Debug)]
-pub struct Analyzer {
-    ast: ast::Ast,
+pub struct Analyzer<'a> {
+    ast: &'a Ast,
 }
 
-impl Analyzer {
-    pub fn new(ast: ast::Ast) -> Analyzer {
+impl<'a> Analyzer<'a> {
+    pub fn new(ast: &'a Ast) -> Analyzer {
         Analyzer { ast }
     }
 
-    pub fn analyze(&self) -> Result<(), AnalyzerError> {
+    pub fn analyze(&self) -> Result<Model, AnalyzerError> {
         println!("{:?}", self.ast);
-        Ok(())
+        Ok(Model::new(self.ast))
     }
 }

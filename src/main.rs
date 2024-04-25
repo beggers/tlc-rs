@@ -12,6 +12,6 @@ fn main() {
     let args = Args::parse();
     let file = args.file;
     let ast = parse_file(&file).unwrap();
-    let analyzer = Analyzer::new(ast);
+    let analyzer = Analyzer::new(&ast);
     let _ = analyzer.analyze();
 }
