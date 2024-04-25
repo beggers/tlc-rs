@@ -24,9 +24,7 @@ pub fn parse_string(input: &str) -> Result<Ast, pest::error::Error<Rule>> {
     // TODO this correctly grabs the first source file, but it should fail
     // if there's extra crap afterwards.
     let sf = parse_source_file(parsed);
-    Ok(Ast {
-        source_files: vec![sf],
-    })
+    Ok(Ast::new(&vec![sf]))
 }
 
 // These functions follow the same ordering as the rules in grammar.pest.
@@ -37,7 +35,7 @@ pub fn parse_string(input: &str) -> Result<Ast, pest::error::Error<Rule>> {
 // ===================
 
 fn parse_ident(pair: Pair<Rule>) -> Ident {
-    Ident::Ident {
+    Ident {
         value: pair.as_str().to_string(),
     }
 }

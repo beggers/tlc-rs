@@ -1,17 +1,20 @@
 use crate::ast::Ast;
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
+// A TLA+ model. Produced by the Analyzer and consumed by the Executor -- holds
+// overall model state, transitions, etc.
 #[derive(Debug)]
 pub struct Model<'a> {
-    pub checked_state_ids: HashSet<String>,
-    pub ast: &'a Ast,
+    // Does this module EXTEND NATURALS?
+    _naturals: bool,
+    pub ast: &'a Ast<'a>,
 }
 
 impl<'a> Model<'a> {
-    pub fn new(ast: &'a Ast) -> Model {
+    pub fn new(ast: &'a Ast) -> Model<'a> {
         Model {
-            checked_state_ids: HashSet::new(),
+            _naturals: false,
             ast,
         }
     }
@@ -20,8 +23,9 @@ impl<'a> Model<'a> {
         vec![State::new()]
     }
 
-    pub fn check(self, _state: State) {
-        println!("Checking state")
+    pub fn check(self, _state: State) -> bool {
+        println!("Checking state");
+        true
     }
 
     pub fn adjacent_states(&self, _state: &State) -> Vec<State> {
@@ -29,6 +33,8 @@ impl<'a> Model<'a> {
     }
 }
 
+// A single execution state of the spec wherein each variable has a single
+// concrete value.
 #[derive(Debug)]
 pub struct State {
     pub vars: HashMap<String, IntStateVariable>,

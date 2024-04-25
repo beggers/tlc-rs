@@ -1,6 +1,13 @@
 use crate::model::{Model, State};
 
 use std::collections::{HashSet, VecDeque};
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum ExecutorError {
+    #[error("Unimplemented")]
+    Unimplemented,
+}
 
 #[derive(Debug)]
 pub struct Executor<'a> {

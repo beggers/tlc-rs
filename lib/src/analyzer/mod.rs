@@ -11,13 +11,15 @@ pub enum AnalyzerError {
     UndefinedSymbol(String),
 }
 
+// Analyzes the AST (making sure that all symbols are defined, etc) and produces
+// a Model which can be executed.
 #[derive(Debug)]
 pub struct Analyzer<'a> {
-    ast: &'a Ast,
+    ast: &'a Ast<'a>,
 }
 
 impl<'a> Analyzer<'a> {
-    pub fn new(ast: &'a Ast) -> Analyzer {
+    pub fn new(ast: &'a Ast) -> Analyzer<'a> {
         Analyzer { ast }
     }
 
