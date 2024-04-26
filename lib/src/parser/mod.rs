@@ -1,7 +1,7 @@
 use crate::ast::{
     Always, Ast, ConstantList, Equals, Expr, ExtendsList, Ident, IfThenElse, Implication,
-    InfixConjunct, LiteralValue, NotEquals, NumberLit, NumberSetLit, OpDefn, Plus, SeqLit,
-    SetMembership, SourceFile, Stutter, TLAMod, TLAModItem, VariableList,
+    InfixConjunct, IntRangeLiteral, Literal, NotEquals, NumberLit, NumberSetLit, OpDefn, Plus,
+    SeqLit, SetMembership, SourceFile, Stutter, TLAMod, TLAModItem, VariableList,
 };
 
 mod base;
@@ -12,19 +12,19 @@ use std::fs;
 
 pub fn parse_file(filename: &str) -> Result<Ast, pest::error::Error<Rule>> {
     let contents = fs::read_to_string(filename).expect("Something went wrong reading the file");
-    parse_string(&contents)
+    parse_string(contents)
 }
 
 // Public for testing.
-pub fn parse_string(input: &str) -> Result<Ast, pest::error::Error<Rule>> {
-    let parsed = TLAParser::parse(Rule::source_file, input)
+pub fn parse_string(input: String) -> Result<Ast, pest::error::Error<Rule>> {
+    let parsed = TLAParser::parse(Rule::source_file, &input)
         .unwrap()
         .next()
         .unwrap();
     // TODO this correctly grabs the first source file, but it should fail
     // if there's extra crap afterwards.
     let sf = parse_source_file(parsed);
-    Ok(Ast::new(&vec![sf]))
+    Ok(Ast::new(sf))
 }
 
 // These functions follow the same ordering as the rules in grammar.pest.
@@ -40,43 +40,37 @@ fn parse_ident(pair: Pair<Rule>) -> Ident {
     }
 }
 
-fn parse_literal_value(pair: Pair<Rule>) -> LiteralValue {
+fn parse_literal_value(pair: Pair<Rule>) -> Literal {
     let inner_pair = pair.into_inner().next().unwrap();
     match inner_pair.as_rule() {
         Rule::number_lit => {
             let number_lit = parse_number_lit(inner_pair);
-            LiteralValue::NumberLit { value: number_lit }
+            Literal::NumberLiteral(number_lit)
         }
         Rule::number_set_lit => {
             let number_set_lit = parse_number_set_lit(inner_pair);
-            LiteralValue::NumberSetLit {
-                value: number_set_lit,
-            }
+            Literal::NumberSetLiteral(number_set_lit)
         }
-        Rule::int_range_lit => {
-            let mut inner_pairs = inner_pair.into_inner();
-            let start = parse_number_lit(inner_pairs.next().unwrap());
-            let end = parse_number_lit(inner_pairs.next().unwrap());
-            match (start, end) {
-                (NumberLit::IntLit { value: start }, NumberLit::IntLit { value: end }) => {
-                    LiteralValue::IntRangeLit {
-                        start: start,
-                        end: end,
-                    }
-                }
-                _ => panic!("IntRangeLit must have two IntLit values"),
-            }
-        }
-        Rule::string_set_lit => LiteralValue::StringSetLit,
         Rule::string_lit => {
             let string_lit = parse_string_lit(inner_pair);
-            LiteralValue::StringLit { value: string_lit }
+            Literal::StringLiteral(string_lit)
+        }
+        Rule::int_range_lit => {
+            let int_range_lit = parse_int_range_lit(inner_pair);
+            Literal::IntRangeLiteral(int_range_lit)
         }
         _ => panic!(
             "Unexpected rule in parse_literal_value: {:?}",
             inner_pair.as_rule()
         ),
     }
+}
+
+fn parse_int_range_lit(pair: Pair<Rule>) -> IntRangeLiteral {
+    let mut inner_pairs = pair.into_inner();
+    let start = inner_pairs.next().unwrap().as_str().parse::<i64>().unwrap();
+    let end = inner_pairs.next().unwrap().as_str().parse::<i64>().unwrap();
+    IntRangeLiteral { start, end }
 }
 
 fn parse_string_lit(pair: Pair<Rule>) -> String {
@@ -89,23 +83,23 @@ fn parse_number_lit(pair: Pair<Rule>) -> NumberLit {
     match inner_pair.as_rule() {
         Rule::nat_lit => {
             let value = inner_pair.as_str().parse::<i64>().unwrap();
-            NumberLit::IntLit { value: value }
+            NumberLit::IntLit { value }
         }
         Rule::binary_lit => {
             let value = inner_pair.as_str().parse::<i64>().unwrap();
-            NumberLit::IntLit { value: value }
+            NumberLit::IntLit { value }
         }
         Rule::octal_lit => {
             let value = inner_pair.as_str().parse::<i64>().unwrap();
-            NumberLit::IntLit { value: value }
+            NumberLit::IntLit { value }
         }
         Rule::hex_lit => {
             let value = inner_pair.as_str().parse::<i64>().unwrap();
-            NumberLit::IntLit { value: value }
+            NumberLit::IntLit { value }
         }
         Rule::real_lit => {
             let value = inner_pair.as_str().parse::<f64>().unwrap();
-            NumberLit::RealLit { value: value }
+            NumberLit::RealLit { value }
         }
         _ => panic!(
             "Unexpected rule in parse_number_lit: {:?}",
@@ -134,9 +128,9 @@ fn parse_number_set_lit(pair: Pair<Rule>) -> NumberSetLit {
 fn parse_seq_lit(pair: Pair<Rule>) -> SeqLit {
     let mut exprs = Vec::new();
     for inner_pair in pair.into_inner() {
-        exprs.push(parse_expr(inner_pair));
+        exprs.push(Box::new(parse_expr(inner_pair)));
     }
-    SeqLit::SeqLit { exprs: exprs }
+    SeqLit { exprs: exprs }
 }
 
 // ===================
@@ -147,77 +141,55 @@ fn parse_expr(pair: Pair<Rule>) -> Expr {
     let mut inner_pairs = pair.into_inner();
     let inner_pair = inner_pairs.next().unwrap();
     match inner_pair.as_rule() {
+        // TODO I suspect we're hitting this on every call to this function.
+        Rule::expr => parse_expr(inner_pair),
         Rule::literal_value => {
             let literal_value = parse_literal_value(inner_pair);
-            Expr::LiteralValue {
-                value: literal_value,
-            }
+            Expr::Literal(literal_value)
         }
         Rule::ident => {
             let ident = parse_ident(inner_pair);
-            Expr::Ident { value: ident }
-        }
-        Rule::if_then_else => {
-            let if_then_else = parse_if_then_else(inner_pair);
-            Expr::IfThenElse {
-                value: Box::new(if_then_else),
-            }
-        }
-        Rule::expr => {
-            // Parens
-            return parse_expr(inner_pair);
+            Expr::Ident(ident)
         }
         Rule::seq_lit => {
             let seq_lit = parse_seq_lit(inner_pair);
-            Expr::SeqLit { value: seq_lit }
+            Expr::SeqLit(seq_lit)
+        }
+        Rule::if_then_else => {
+            let if_then_else = parse_if_then_else(inner_pair);
+            Expr::IfThenElse(if_then_else)
         }
         Rule::set_membership => {
             let set_membership = parse_set_membership(inner_pair);
-            Expr::SetMembership {
-                value: Box::new(set_membership),
-            }
+            Expr::SetMembership(set_membership)
         }
         Rule::equals => {
             let equals = parse_equals(inner_pair);
-            Expr::Equals {
-                value: Box::new(equals),
-            }
+            Expr::Eq(equals)
         }
         Rule::not_equals => {
             let not_equals = parse_not_equals(inner_pair);
-            Expr::NotEquals {
-                value: Box::new(not_equals),
-            }
+            Expr::Neq(not_equals)
         }
         Rule::plus => {
             let plus = parse_plus(inner_pair);
-            Expr::Plus {
-                value: Box::new(plus),
-            }
+            Expr::Plus(plus)
         }
         Rule::infix_conjunct => {
             let infix_conjunct = parse_infix_conjunct(inner_pair);
-            Expr::InfixConjunct {
-                value: Box::new(infix_conjunct),
-            }
+            Expr::InfixConjunct(infix_conjunct)
         }
         Rule::always => {
-            let box_op = parse_always(inner_pair);
-            Expr::Always {
-                value: Box::new(box_op),
-            }
+            let always = parse_always(inner_pair);
+            Expr::Always(always)
         }
         Rule::stutter => {
             let stutter = parse_stutter(inner_pair);
-            Expr::Stutter {
-                value: Box::new(stutter),
-            }
+            Expr::Stutter(stutter)
         }
         Rule::implication => {
             let implication = parse_implication(inner_pair);
-            Expr::Implication {
-                value: Box::new(implication),
-            }
+            Expr::Implication(implication)
         }
         _ => panic!("Unexpected rule in parse_expr: {:?}", inner_pair.as_rule()),
     }
@@ -228,7 +200,7 @@ fn parse_if_then_else(pair: Pair<Rule>) -> IfThenElse {
     let cond = parse_expr(inner_pairs.next().unwrap());
     let then_expr = parse_expr(inner_pairs.next().unwrap());
     let else_expr = parse_expr(inner_pairs.next().unwrap());
-    IfThenElse::IfThenElse {
+    IfThenElse {
         cond: Box::new(cond),
         then_expr: Box::new(then_expr),
         else_expr: Box::new(else_expr),
@@ -239,9 +211,9 @@ fn parse_set_membership(pair: Pair<Rule>) -> SetMembership {
     let mut inner_pairs = pair.into_inner();
     let ident = parse_ident(inner_pairs.next().unwrap());
     let set_expr = parse_expr(inner_pairs.next().unwrap());
-    SetMembership::SetMembership {
-        ident: ident,
-        set_expr: set_expr,
+    SetMembership {
+        ident,
+        set_expr: Box::new(set_expr),
     }
 }
 
@@ -249,9 +221,9 @@ fn parse_equals(pair: Pair<Rule>) -> Equals {
     let mut inner_pairs = pair.into_inner();
     let left = parse_ident(inner_pairs.next().unwrap());
     let right = parse_expr(inner_pairs.next().unwrap());
-    Equals::Equals {
-        left: left,
-        right: right,
+    Equals {
+        left,
+        right: Box::new(right),
     }
 }
 
@@ -259,9 +231,9 @@ fn parse_not_equals(pair: Pair<Rule>) -> NotEquals {
     let mut inner_pairs = pair.into_inner();
     let left = parse_ident(inner_pairs.next().unwrap());
     let right = parse_expr(inner_pairs.next().unwrap());
-    NotEquals::NotEquals {
-        left: left,
-        right: right,
+    NotEquals {
+        left,
+        right: Box::new(right),
     }
 }
 
@@ -269,9 +241,9 @@ fn parse_plus(pair: Pair<Rule>) -> Plus {
     let mut inner_pairs = pair.into_inner();
     let left = parse_ident(inner_pairs.next().unwrap());
     let right = parse_expr(inner_pairs.next().unwrap());
-    Plus::Plus {
-        left: left,
-        right: right,
+    Plus {
+        left,
+        right: Box::new(right),
     }
 }
 
@@ -279,29 +251,33 @@ fn parse_infix_conjunct(pair: Pair<Rule>) -> InfixConjunct {
     let mut inner_pairs = pair.into_inner();
     let left = parse_ident(inner_pairs.next().unwrap());
     let right = parse_expr(inner_pairs.next().unwrap());
-    InfixConjunct::InfixConjunct {
-        left: left,
-        right: right,
+    InfixConjunct {
+        left,
+        right: Box::new(right),
     }
 }
 
 fn parse_always(pair: Pair<Rule>) -> Always {
     let expr = parse_expr(pair.into_inner().next().unwrap());
-    Always::Always { expr: expr }
+    Always {
+        expr: Box::new(expr),
+    }
 }
 
 fn parse_stutter(pair: Pair<Rule>) -> Stutter {
     let expr = parse_expr(pair.into_inner().next().unwrap());
-    Stutter::Stutter { expr: expr }
+    Stutter {
+        expr: Box::new(expr),
+    }
 }
 
 fn parse_implication(pair: Pair<Rule>) -> Implication {
     let mut inner_pairs = pair.into_inner();
     let left = parse_ident(inner_pairs.next().unwrap());
     let right = parse_expr(inner_pairs.next().unwrap());
-    Implication::Implication {
-        left: left,
-        right: right,
+    Implication {
+        left,
+        right: Box::new(right),
     }
 }
 
@@ -309,9 +285,9 @@ fn parse_op_defn(pair: Pair<Rule>) -> OpDefn {
     let mut inner_pairs = pair.into_inner();
     let ident = parse_ident(inner_pairs.next().unwrap());
     let expr = parse_expr(inner_pairs.next().unwrap());
-    OpDefn::SingleExprOpDefn {
-        ident: ident,
-        expr: expr,
+    OpDefn {
+        ident,
+        expr: Box::new(expr),
     }
 }
 
@@ -324,7 +300,7 @@ fn parse_source_file(pair: Pair<Rule>) -> SourceFile {
     for inner_pair in pair.into_inner() {
         tla_mods.push(parse_tla_mod(inner_pair));
     }
-    SourceFile::SourceFile { tla_mods: tla_mods }
+    SourceFile { tla_mods: tla_mods }
 }
 
 fn parse_tla_mod(pair: Pair<Rule>) -> TLAMod {
@@ -334,45 +310,31 @@ fn parse_tla_mod(pair: Pair<Rule>) -> TLAMod {
     // Iterate over everything in the module
     for inner_pair in inner_pairs {
         match inner_pair.as_rule() {
-            Rule::op_defn => {
-                items.push(TLAModItem::OpDefn {
-                    op_defn: parse_op_defn(inner_pair),
-                });
-            }
             Rule::tla_mod => {
-                items.push(TLAModItem::TLAMod {
-                    tla_mod: parse_tla_mod(inner_pair),
-                });
+                items.push(TLAModItem::TLAMod(Box::new(parse_tla_mod(inner_pair))));
             }
             Rule::constant_list => {
-                items.push(TLAModItem::ConstantList {
-                    constant_list: parse_constant_list(inner_pair),
-                });
+                items.push(TLAModItem::ConstantList(parse_constant_list(inner_pair)));
             }
             Rule::extends_list => {
-                items.push(TLAModItem::ExtendsList {
-                    extends_list: parse_extends_list(inner_pair),
-                });
+                items.push(TLAModItem::ExtendsList(parse_extends_list(inner_pair)));
             }
             Rule::variable_list => {
-                items.push(TLAModItem::VariableList {
-                    variable_list: parse_variable_list(inner_pair),
-                });
+                items.push(TLAModItem::VariableList(parse_variable_list(inner_pair)));
+            }
+            Rule::op_defn => {
+                items.push(TLAModItem::OpDefn(parse_op_defn(inner_pair)));
             }
             Rule::theorem => {
                 // Nothing
             }
             _ => panic!(
-                "Unexpected rule in parse_tla_mod: {:?}. {:?}",
-                inner_pair.as_rule(),
-                inner_pair.as_str()
+                "Unexpected rule in parse_tla_mod: {:?}",
+                inner_pair.as_rule()
             ),
         }
     }
-    TLAMod {
-        ident: ident,
-        items: items,
-    }
+    TLAMod { ident, items }
 }
 
 fn parse_constant_list(pair: Pair<Rule>) -> ConstantList {
@@ -380,7 +342,7 @@ fn parse_constant_list(pair: Pair<Rule>) -> ConstantList {
     for inner_pair in pair.into_inner() {
         idents.push(parse_ident(inner_pair));
     }
-    ConstantList { idents: idents }
+    ConstantList { idents }
 }
 
 fn parse_extends_list(pair: Pair<Rule>) -> ExtendsList {
@@ -388,7 +350,7 @@ fn parse_extends_list(pair: Pair<Rule>) -> ExtendsList {
     for inner_pair in pair.into_inner() {
         idents.push(parse_ident(inner_pair));
     }
-    ExtendsList { idents: idents }
+    ExtendsList { idents }
 }
 
 fn parse_variable_list(pair: Pair<Rule>) -> VariableList {
@@ -396,5 +358,5 @@ fn parse_variable_list(pair: Pair<Rule>) -> VariableList {
     for inner_pair in pair.into_inner() {
         idents.push(parse_ident(inner_pair));
     }
-    VariableList { idents: idents }
+    VariableList { idents }
 }

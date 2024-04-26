@@ -40,21 +40,19 @@ pub trait ASTNode {
 }
 
 #[derive(Debug)]
-pub struct Ast<'a> {
-    source_files: &'a Vec<SourceFile<'a>>,
+pub struct Ast {
+    source_file: SourceFile,
 }
 
-impl<'a> Ast<'a> {
-    pub fn new(source_files: &'a Vec<SourceFile<'a>>) -> Ast<'a> {
-        Ast { source_files }
+impl Ast {
+    pub fn new(source_file: SourceFile) -> Ast {
+        Ast { source_file }
     }
 }
 
-impl<'a> ASTNode for Ast<'a> {
+impl ASTNode for Ast {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        for source_file in self.source_files {
-            visitor.visit_source_file(source_file);
-        }
+        visitor.visit_source_file(&self.source_file);
     }
 }
 
@@ -79,13 +77,6 @@ impl ASTNode for Ident {
     }
 }
 
-pub enum LiteralValueType {
-    NumberValue,
-    NumberSetValue,
-    IntRangeValue,
-    StringValue,
-}
-
 #[derive(Debug)]
 pub struct IntRangeLiteral {
     pub start: i64,
@@ -104,38 +95,16 @@ pub enum NumberSetLit {
     IntSetLit,
     RealSetLit,
 }
-pub union LiteralValue<'a> {
-    pub number_value: &'a NumberLit,
-    pub number_set_value: &'a NumberSetLit,
-    pub int_range_value: &'a IntRangeLiteral,
-    pub string_value: &'a String,
+
+#[derive(Debug)]
+pub enum Literal {
+    NumberLiteral(NumberLit),
+    NumberSetLiteral(NumberSetLit),
+    IntRangeLiteral(IntRangeLiteral),
+    StringLiteral(String),
 }
 
-pub struct Literal<'a> {
-    pub value: LiteralValue<'a>,
-    pub value_type: LiteralValueType,
-}
-
-impl std::fmt::Debug for Literal<'_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self.value_type {
-            LiteralValueType::NumberValue => {
-                write!(f, "{:?}", self.value.number_value)
-            }
-            LiteralValueType::NumberSetValue => {
-                write!(f, "{:?}", self.value.number_set_value)
-            }
-            LiteralValueType::IntRangeValue => {
-                write!(f, "{:?}", self.value.int_range_value)
-            }
-            LiteralValueType::StringValue => {
-                write!(f, "{:?}", self.value.string_value)
-            }
-        }
-    }
-}
-
-impl ASTNode for Literal<'_> {
+impl ASTNode for Literal {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_literal(self);
     }
@@ -146,11 +115,11 @@ impl ASTNode for Literal<'_> {
 // ===================
 
 #[derive(Debug)]
-pub struct SeqLit<'a> {
-    pub exprs: Vec<Expr<'a>>,
+pub struct SeqLit {
+    pub exprs: Vec<Box<Expr>>,
 }
 
-impl ASTNode for SeqLit<'_> {
+impl ASTNode for SeqLit {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_seq_lit(self);
     }
@@ -160,111 +129,50 @@ impl ASTNode for SeqLit<'_> {
 // Expressions
 // ===================
 
-pub struct Expr<'a> {
-    pub value: &'a ExprValue<'a>,
-    pub value_type: ExprValueType,
+#[derive(Debug)]
+pub enum Expr {
+    Literal(Literal),
+    Ident(Ident),
+    SeqLit(SeqLit),
+    IfThenElse(IfThenElse),
+    SetMembership(SetMembership),
+    // TODO refactor things to be sensible (i.e. have an InfixOp type etc).
+    Eq(Equals),
+    Neq(NotEquals),
+    Plus(Plus),
+    InfixConjunct(InfixConjunct),
+    // TODO refactor things to be sensible (i.e. have an UnaryOp type etc).
+    Always(Always),
+    Stutter(Stutter),
+    Implication(Implication),
 }
 
-// TODO refactor things to be sensible (i.e. have an InfixOp type etc).
-pub enum ExprValueType {
-    Literal,
-    Ident,
-    SeqLit,
-    IfThenElse,
-    SetMembership,
-    Equals,
-    NotEquals,
-    Plus,
-    InfixConjunct,
-    Always,
-    Stutter,
-    Implication,
-}
-
-pub union ExprValue<'a> {
-    pub literal_value: &'a Literal<'a>,
-    pub ident_value: &'a Ident,
-    pub seqlit_value: &'a SeqLit<'a>,
-    pub ifthenelse_value: &'a IfThenElse<'a>,
-    pub set_membership_value: &'a SetMembership<'a>,
-    pub eq_value: &'a Equals<'a>,
-    pub neq_value: &'a NotEquals<'a>,
-    pub plus_value: &'a Plus<'a>,
-    pub infixconjunct_value: &'a InfixConjunct<'a>,
-    pub always_value: &'a Always<'a>,
-    pub stutter_value: &'a Stutter<'a>,
-    pub implication_value: &'a Implication<'a>,
-}
-
-impl std::fmt::Debug for Expr<'_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self.value_type {
-            ExprValueType::Literal => {
-                write!(f, "{:?}", self.value.literal_value)
-            }
-            ExprValueType::Ident => {
-                write!(f, "{:?}", self.value.ident_value)
-            }
-            ExprValueType::SeqLit => {
-                write!(f, "{:?}", self.value.seqlit_value)
-            }
-            ExprValueType::IfThenElse => {
-                write!(f, "{:?}", self.value.ifthenelse_value)
-            }
-            ExprValueType::SetMembership => {
-                write!(f, "{:?}", self.value.set_membership_value)
-            }
-            ExprValueType::Equals => {
-                write!(f, "{:?}", self.value.eq_value)
-            }
-            ExprValueType::NotEquals => {
-                write!(f, "{:?}", self.value.neq_value)
-            }
-            ExprValueType::Plus => {
-                write!(f, "{:?}", self.value.plus_value)
-            }
-            ExprValueType::InfixConjunct => {
-                write!(f, "{:?}", self.value.infixconjunct_value)
-            }
-            ExprValueType::Always => {
-                write!(f, "{:?}", self.value.always_value)
-            }
-            ExprValueType::Stutter => {
-                write!(f, "{:?}", self.value.stutter_value)
-            }
-            ExprValueType::Implication => {
-                write!(f, "{:?}", self.value.implication_value)
-            }
-        }
-    }
-}
-
-impl ASTNode for Expr<'_> {
+impl ASTNode for Expr {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_expr(self);
     }
 }
 
 #[derive(Debug)]
-pub struct IfThenElse<'a> {
-    pub cond: &'a Expr<'a>,
-    pub then_expr: &'a Expr<'a>,
-    pub else_expr: &'a Expr<'a>,
+pub struct IfThenElse {
+    pub cond: Box<Expr>,
+    pub then_expr: Box<Expr>,
+    pub else_expr: Box<Expr>,
 }
 
-impl ASTNode for IfThenElse<'_> {
+impl ASTNode for IfThenElse {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_ifthenelse(self);
     }
 }
 
 #[derive(Debug)]
-pub struct OpDefn<'a> {
-    pub ident: &'a Ident,
-    pub expr: &'a Expr<'a>,
+pub struct OpDefn {
+    pub ident: Ident,
+    pub expr: Box<Expr>,
 }
 
-impl ASTNode for OpDefn<'_> {
+impl ASTNode for OpDefn {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_op_defn(self);
     }
@@ -272,94 +180,94 @@ impl ASTNode for OpDefn<'_> {
 
 // TODO unify these into a single InfixOperator enum.
 #[derive(Debug)]
-pub struct SetMembership<'a> {
-    pub ident: &'a Ident,
-    pub set_expr: &'a Expr<'a>,
+pub struct SetMembership {
+    pub ident: Ident,
+    pub set_expr: Box<Expr>,
 }
 
-impl ASTNode for SetMembership<'_> {
+impl ASTNode for SetMembership {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_set_membership(self);
     }
 }
 
 #[derive(Debug)]
-pub struct Equals<'a> {
-    pub left: &'a Ident,
-    pub right: &'a Expr<'a>,
+pub struct Equals {
+    pub left: Ident,
+    pub right: Box<Expr>,
 }
 
-impl ASTNode for Equals<'_> {
+impl ASTNode for Equals {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_equals(self);
     }
 }
 
 #[derive(Debug)]
-pub struct NotEquals<'a> {
-    pub left: &'a Ident,
-    pub right: &'a Expr<'a>,
+pub struct NotEquals {
+    pub left: Ident,
+    pub right: Box<Expr>,
 }
 
-impl ASTNode for NotEquals<'_> {
+impl ASTNode for NotEquals {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_not_equals(self);
     }
 }
 
 #[derive(Debug)]
-pub struct Plus<'a> {
-    pub left: &'a Ident,
-    pub right: &'a Expr<'a>,
+pub struct Plus {
+    pub left: Ident,
+    pub right: Box<Expr>,
 }
 
-impl ASTNode for Plus<'_> {
+impl ASTNode for Plus {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_plus(self);
     }
 }
 
 #[derive(Debug)]
-pub struct InfixConjunct<'a> {
-    pub left: &'a Ident,
-    pub right: &'a Expr<'a>,
+pub struct InfixConjunct {
+    pub left: Ident,
+    pub right: Box<Expr>,
 }
 
-impl ASTNode for InfixConjunct<'_> {
+impl ASTNode for InfixConjunct {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_infixconjunct(self);
     }
 }
 
 #[derive(Debug)]
-pub struct Always<'a> {
-    pub expr: &'a Expr<'a>,
+pub struct Always {
+    pub expr: Box<Expr>,
 }
 
-impl ASTNode for Always<'_> {
+impl ASTNode for Always {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_always(self);
     }
 }
 
 #[derive(Debug)]
-pub struct Stutter<'a> {
-    pub expr: &'a Expr<'a>,
+pub struct Stutter {
+    pub expr: Box<Expr>,
 }
 
-impl ASTNode for Stutter<'_> {
+impl ASTNode for Stutter {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_stutter(self);
     }
 }
 
 #[derive(Debug)]
-pub struct Implication<'a> {
-    pub left: &'a Ident,
-    pub right: &'a Expr<'a>,
+pub struct Implication {
+    pub left: Ident,
+    pub right: Box<Expr>,
 }
 
-impl ASTNode for Implication<'_> {
+impl ASTNode for Implication {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_implication(self);
     }
@@ -370,96 +278,59 @@ impl ASTNode for Implication<'_> {
 // ===================
 
 #[derive(Debug)]
-pub struct SourceFile<'a> {
-    pub tla_mods: &'a Vec<TLAMod<'a>>,
+pub struct SourceFile {
+    pub tla_mods: Vec<TLAMod>,
 }
 
-pub union TLAModItemValue<'a> {
-    pub op_defn: &'a OpDefn<'a>,
-    pub tla_mod: &'a TLAMod<'a>,
-    pub constant_list: &'a ConstantList<'a>,
-    pub extends_list: &'a ExtendsList<'a>,
-    pub variable_list: &'a VariableList<'a>,
+#[derive(Debug)]
+pub enum TLAModItem {
+    OpDefn(OpDefn),
+    TLAMod(Box<TLAMod>),
+    ConstantList(ConstantList),
+    ExtendsList(ExtendsList),
+    VariableList(VariableList),
 }
 
-pub enum TLAModItemValueType {
-    OpDefn,
-    TLAMod,
-    ConstantList,
-    ExtendsList,
-    VariableList,
+#[derive(Debug)]
+pub struct TLAMod {
+    pub ident: Ident,
+    pub items: Vec<TLAModItem>,
 }
 
-pub struct TLAModItem<'a> {
-    pub value: TLAModItemValue<'a>,
-    pub value_type: TLAModItemValueType,
-}
-
-pub struct TLAMod<'a> {
-    pub ident: &'a Ident,
-    pub items: &'a Vec<&'a TLAModItem<'a>>,
-}
-
-impl std::fmt::Debug for TLAMod<'_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", self.ident);
-        for item in self.items {
-            match item.value_type {
-                TLAModItemValueType::OpDefn => {
-                    write!(f, "{:?}", item.value.op_defn)
-                }
-                TLAModItemValueType::TLAMod => {
-                    write!(f, "{:?}", item.value.tla_mod)
-                }
-                TLAModItemValueType::ConstantList => {
-                    write!(f, "{:?}", item.value.constant_list)
-                }
-                TLAModItemValueType::ExtendsList => {
-                    write!(f, "{:?}", item.value.extends_list)
-                }
-                TLAModItemValueType::VariableList => {
-                    write!(f, "{:?}", item.value.variable_list)
-                }
-            };
-        }
-        Ok(())
-    }
-}
-
-impl ASTNode for TLAMod<'_> {
+impl ASTNode for TLAMod {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_tlamod(self);
     }
 }
 
 #[derive(Debug)]
-pub struct ConstantList<'a> {
-    pub idents: &'a Vec<Ident>,
+pub struct ConstantList {
+    pub idents: Vec<Ident>,
 }
 
-impl ASTNode for ConstantList<'_> {
+impl ASTNode for ConstantList {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_constant_list(self);
     }
 }
 
 #[derive(Debug)]
-pub struct ExtendsList<'a> {
-    pub idents: &'a Vec<Ident>,
+pub struct ExtendsList {
+    pub idents: Vec<Ident>,
 }
 
-impl ASTNode for ExtendsList<'_> {
+impl ASTNode for ExtendsList {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_extends_list(self);
     }
 }
 
 #[derive(Debug)]
-pub struct VariableList<'a> {
-    pub idents: &'a Vec<Ident>,
+pub struct VariableList {
+    pub idents: Vec<Ident>,
 }
 
-impl ASTNode for VariableList<'_> {
+impl ASTNode for VariableList {
     fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
         visitor.visit_variable_list(self);
     }

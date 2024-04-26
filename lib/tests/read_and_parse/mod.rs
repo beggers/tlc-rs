@@ -27,5 +27,5 @@ pub fn test(filename: &str, test_name: &str) {
     .unwrap();
     let captures = rx.captures(&contents).unwrap();
     let contents = captures.get(1).unwrap().as_str().to_string();
-    parse_string(&contents).unwrap();
+    parse_string(contents).unwrap();
 }

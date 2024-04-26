@@ -8,7 +8,7 @@ use std::collections::HashMap;
 pub struct Model<'a> {
     // Does this module EXTEND NATURALS?
     _naturals: bool,
-    pub ast: &'a Ast<'a>,
+    pub ast: &'a Ast,
 }
 
 impl<'a> Model<'a> {

@@ -15,7 +15,7 @@ pub enum AnalyzerError {
 // a Model which can be executed.
 #[derive(Debug)]
 pub struct Analyzer<'a> {
-    ast: &'a Ast<'a>,
+    ast: &'a Ast,
 }
 
 impl<'a> Analyzer<'a> {
