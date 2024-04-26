@@ -11,48 +11,14 @@ pub enum AstError {
     Unimplemented,
 }
 
-pub trait ASTVisitor {
-    // TODO refactor the AST to suck less -- should just have
-    // binaryOp, prefixOp, Expr etc types.
-    fn visit_source_file(&self, source_file: &SourceFile);
-    fn visit_ident(&self, ident: &Ident);
-    fn visit_literal(&self, literal: &Literal);
-    fn visit_seq_lit(&self, seq_lit: &SeqLit);
-    fn visit_expr(&self, expr: &Expr);
-    fn visit_ifthenelse(&self, ifthenelse: &IfThenElse);
-    fn visit_op_defn(&self, op_defn: &OpDefn);
-    fn visit_set_membership(&self, set_membership: &SetMembership);
-    fn visit_equals(&self, equals: &Equals);
-    fn visit_not_equals(&self, not_equals: &NotEquals);
-    fn visit_plus(&self, plus: &Plus);
-    fn visit_infixconjunct(&self, infixconjunct: &InfixConjunct);
-    fn visit_always(&self, always: &Always);
-    fn visit_stutter(&self, stutter: &Stutter);
-    fn visit_implication(&self, implication: &Implication);
-    fn visit_tlamod(&self, tlamod: &TLAMod);
-    fn visit_constant_list(&self, constant_list: &ConstantList);
-    fn visit_extends_list(&self, extends_list: &ExtendsList);
-    fn visit_variable_list(&self, variable_list: &VariableList);
-}
-
-pub trait ASTNode {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor);
-}
-
 #[derive(Debug)]
 pub struct Ast {
-    source_file: SourceFile,
+    pub source_file: SourceFile,
 }
 
 impl Ast {
     pub fn new(source_file: SourceFile) -> Ast {
         Ast { source_file }
-    }
-}
-
-impl ASTNode for Ast {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_source_file(&self.source_file);
     }
 }
 
@@ -68,12 +34,6 @@ pub struct Ident {
 impl Ident {
     pub fn new(value: String) -> Ident {
         Ident { value }
-    }
-}
-
-impl ASTNode for Ident {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_ident(self);
     }
 }
 
@@ -104,12 +64,6 @@ pub enum Literal {
     StringLiteral(String),
 }
 
-impl ASTNode for Literal {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_literal(self);
-    }
-}
-
 // ===================
 // Structured literals
 // ===================
@@ -117,12 +71,6 @@ impl ASTNode for Literal {
 #[derive(Debug)]
 pub struct SeqLit {
     pub exprs: Vec<Box<Expr>>,
-}
-
-impl ASTNode for SeqLit {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_seq_lit(self);
-    }
 }
 
 // ===================
@@ -147,12 +95,6 @@ pub enum Expr {
     Implication(Implication),
 }
 
-impl ASTNode for Expr {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_expr(self);
-    }
-}
-
 #[derive(Debug)]
 pub struct IfThenElse {
     pub cond: Box<Expr>,
@@ -160,22 +102,10 @@ pub struct IfThenElse {
     pub else_expr: Box<Expr>,
 }
 
-impl ASTNode for IfThenElse {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_ifthenelse(self);
-    }
-}
-
 #[derive(Debug)]
 pub struct OpDefn {
     pub ident: Ident,
     pub expr: Box<Expr>,
-}
-
-impl ASTNode for OpDefn {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_op_defn(self);
-    }
 }
 
 // TODO unify these into a single InfixOperator enum.
@@ -185,22 +115,10 @@ pub struct SetMembership {
     pub set_expr: Box<Expr>,
 }
 
-impl ASTNode for SetMembership {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_set_membership(self);
-    }
-}
-
 #[derive(Debug)]
 pub struct Equals {
     pub left: Ident,
     pub right: Box<Expr>,
-}
-
-impl ASTNode for Equals {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_equals(self);
-    }
 }
 
 #[derive(Debug)]
@@ -209,22 +127,10 @@ pub struct NotEquals {
     pub right: Box<Expr>,
 }
 
-impl ASTNode for NotEquals {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_not_equals(self);
-    }
-}
-
 #[derive(Debug)]
 pub struct Plus {
     pub left: Ident,
     pub right: Box<Expr>,
-}
-
-impl ASTNode for Plus {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_plus(self);
-    }
 }
 
 #[derive(Debug)]
@@ -233,21 +139,9 @@ pub struct InfixConjunct {
     pub right: Box<Expr>,
 }
 
-impl ASTNode for InfixConjunct {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_infixconjunct(self);
-    }
-}
-
 #[derive(Debug)]
 pub struct Always {
     pub expr: Box<Expr>,
-}
-
-impl ASTNode for Always {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_always(self);
-    }
 }
 
 #[derive(Debug)]
@@ -255,22 +149,10 @@ pub struct Stutter {
     pub expr: Box<Expr>,
 }
 
-impl ASTNode for Stutter {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_stutter(self);
-    }
-}
-
 #[derive(Debug)]
 pub struct Implication {
     pub left: Ident,
     pub right: Box<Expr>,
-}
-
-impl ASTNode for Implication {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_implication(self);
-    }
 }
 
 // ===================
@@ -297,21 +179,9 @@ pub struct TLAMod {
     pub items: Vec<TLAModItem>,
 }
 
-impl ASTNode for TLAMod {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_tlamod(self);
-    }
-}
-
 #[derive(Debug)]
 pub struct ConstantList {
     pub idents: Vec<Ident>,
-}
-
-impl ASTNode for ConstantList {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_constant_list(self);
-    }
 }
 
 #[derive(Debug)]
@@ -319,19 +189,7 @@ pub struct ExtendsList {
     pub idents: Vec<Ident>,
 }
 
-impl ASTNode for ExtendsList {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_extends_list(self);
-    }
-}
-
 #[derive(Debug)]
 pub struct VariableList {
     pub idents: Vec<Ident>,
-}
-
-impl ASTNode for VariableList {
-    fn accept_visitor(&self, visitor: &dyn ASTVisitor) {
-        visitor.visit_variable_list(self);
-    }
 }
