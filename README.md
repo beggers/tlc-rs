@@ -1,6 +1,8 @@
 # tlc-rs
 Rust TLA+ checker
 
+!!! This project is paused indefinitely. TLA+'s specific brand of whitespace-sensitive syntax makes it hard to parse and I frankly just don't have the time.
+
 ## Organization
 
 All modules which need to be integration tested (e.g. parsing) live in `lib/`, which is technically a separate project. The top-level `src/` directory contains information for the binary project which depends on the `lib/` project.
